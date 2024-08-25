@@ -70,7 +70,8 @@ def compile_tex_to_pdf():
     Return:
         Void.
     """
-    subprocess.run(['pdflatex', TeX_file])
+    #subprocess.run(['pdflatex', TeX_file])
+    subprocess.run(['lualatex', TeX_file])
 
 
 def make_temp():
