@@ -1,0 +1,5 @@
+\mmzMemo 
+\global \mmzContextExtra {}%
+%
+\mmzSource 
+\begin {tikzpicture}[tdplot_main_coords] \def \Vn {270} \def \Vo {40} \def \Voo {4} \draw [domain=90:\Vn ,smooth,very thin,samples=50,variable=\Vt ] plot ({sqrt(1-(\Vt /360)^2)*sin(\Vo *\Vt )/(1-sqrt(1-(\Vt /360)^2)*cos(\Vo *\Vt )))},{(\Vt /360)/(1-sqrt(1-(\Vt /360)^2)*cos(\Vo *\Vt ))*cos(\Voo *\Vt )},{(\Vt /360)/(1-sqrt(1-(\Vt /360)^2)*cos(\Vo *\Vt ))*sin(\Voo *\Vt )}); \draw [white,tdplot_screen_coords] (-5,-5) rectangle (5,5); \end {tikzpicture}

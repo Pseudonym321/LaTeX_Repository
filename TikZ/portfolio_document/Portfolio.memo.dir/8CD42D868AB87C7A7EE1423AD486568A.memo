@@ -1,0 +1,5 @@
+\mmzMemo 
+\global \mmzContextExtra {}%
+%
+\mmzSource 
+\begin {tikzpicture} \begin {axis}[ view={0}{90}, domain=-1:1, y domain=-1:1, xmax=1, ymax=1, ymin=-1, zmin=-1, zmax=1, samples=21 ] \addplot 3 [quiver={u={1/(sqrt(1+(2*x-y)^2))}, v={(2*x-y)/(sqrt(1+(2*x-y)^2))}, scale arrows=0.075, every arrow/.append style={-}}] (x,y,0); \end {axis} \end {tikzpicture}

@@ -1,0 +1,5 @@
+\mmzMemo 
+\global \mmzContextExtra {}%
+%
+\mmzSource 
+\begin {tikzpicture} \begin {axis}[ hide axis, view={25}{30}, scale=3, unit vector ratio=2 1 1, ] \addplot 3[ mesh, color=black, opacity=0.2, samples=40, restrict x to domain=-2:2, ]({x},{(2^x)*cos(deg(y))},{(2^x)*sin(deg(y))}); \end {axis} \end {tikzpicture}

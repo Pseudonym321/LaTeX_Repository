@@ -1,0 +1,5 @@
+\mmzMemo 
+\global \mmzContextExtra {}%
+%
+\mmzSource 
+\begin {tikzpicture} \begin {axis}[ xmin=-2, xmax=2, ymin=-2, ymax=2, axis equal, xtick={\empty }, ytick={\empty }] \addplot [samples=300,domain=1:5, name path=G] {(x^2-1)^(1/2)}; \addplot [samples=300,domain=1:5] {-(x^2-1)^(1/2)}; \addplot [samples=300,domain=-1:-5] {(x^2-1)^(1/2)}; \addplot [samples=300,domain=-1:-5] {-(x^2-1)^(1/2)}; \path [name path=H] (0,0) -- (1,0); \draw [name path=F] (0,0) -- (1.6,1.24936) node[pos=0.5, above left] {$r$}; \addplot [fill=black, fill opacity=0.2] fill between [of=F and G, soft clip={domain=1:1.6}]; \addplot [fill=black, fill opacity=0.2] fill between [of=F and H, soft clip={domain=0:1}]; \node [] at (0.65,0.2) {$a/2$}; \draw [dashed] (0,1.24936) -- (1.6,1.24936) node[pos=0, left]{$r\sinh a$}; \draw [dashed] (1.6,0) -- (1.6,1.24936) node[pos=0, below]{$\ \ r\cosh a$}; \end {axis} \end {tikzpicture}

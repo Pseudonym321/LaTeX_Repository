@@ -1,0 +1,5 @@
+\mmzMemo 
+\global \mmzContextExtra {}%
+%
+\mmzSource 
+\begin {tikzpicture}[tdplot_main_coords, scale=1] \draw [domain=-360:360,very thick,smooth,samples=500,variable=\t ,red] plot ({sin(4*\t )*(1-(\t /360)^2)^(0.5)},\t /360,{cos(4*\t )*(1-(\t /360)^2)^0.5}); \draw [tdplot_screen_coords,very thin] (0,0) circle [radius=1]; \foreach \t in {0, 10, ..., 350}{ \begin {scope} \tdplotsetrotatedcoords {0}{\t }{0} \draw [tdplot_rotated_coords,very thin] (0,0) circle [radius=1]; \tdplotsetrotatedcoords {90}{90}{0} \draw [tdplot_rotated_coords,very thin] (0,0,{sin(\t )}) circle [radius={cos(\t )}]; \end {scope}} \end {tikzpicture}

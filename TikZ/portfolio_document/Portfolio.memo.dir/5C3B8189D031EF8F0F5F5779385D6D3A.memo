@@ -1,0 +1,5 @@
+\mmzMemo 
+\global \mmzContextExtra {}%
+%
+\mmzSource 
+\begin {tikzpicture} \coordinate (O) at (0,0); \coordinate (L) at (0,5); \coordinate (A) at (10,0); \draw [blue] (O) -- (L) -- (A) -- cycle; \draw pic["",-,draw,angle eccentricity=1, angle radius=0.5cm,blue]{right angle=A--O--L}; \draw pic["$\theta $",-latex,draw,angle eccentricity=1.4, angle radius=0.8cm,blue]{angle=O--L--A}; \draw pic["$\frac {\pi }{2}-\theta $",-,draw,angle eccentricity=1.4, angle radius=1.6cm,blue]{angle=L--A--O}; \draw [decorate,decoration = {brace,mirror},cyan] (0,-0.2) -- (10,-0.2) node[pos=0.5,below=3pt,cyan]{$A$}; \draw [decorate,decoration = {brace,},cyan] (-0.2,0) -- (-0.2,5) node[pos=0.5,left=3pt,cyan]{$L$}; \coordinate (C) at (10,0); \coordinate (R) at (13,0); \draw [black] (10,0) -- (13,0); \draw pic["\color {red}$\frac {3\pi }{2}+\theta =\arctan (m)\color {black}$",-latex,draw,angle eccentricity=1.4, angle radius=1.6cm]{angle=R--C--L}; \draw [cyan,dashed,->] (0,5) -- (-1.5,5.75) node[pos=0.5,right=1cm]{$\color {cyan}y=\tan \left (\frac {3\pi }{2}-\theta \right )\cdot x+L$}; \draw [cyan,dashed,->] (10,0) -- (12,-1); \end {tikzpicture}

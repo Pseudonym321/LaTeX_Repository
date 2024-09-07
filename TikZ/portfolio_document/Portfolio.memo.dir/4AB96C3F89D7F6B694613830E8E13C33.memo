@@ -1,0 +1,5 @@
+\mmzMemo 
+\global \mmzContextExtra {}%
+%
+\mmzSource 
+\begin {tikzpicture}[tdplot_main_coords] \tdplotsetrotatedcoords {0}{0}{0} \draw [tdplot_rotated_coords,domain=60:360,smooth,very thin,samples=500,variable=\Vt ,blue] plot ( {\Vt /360/(1-sqrt(1-(\Vt /360)^2)*cos(20*\Vt ))*cos(20*\Vt )*sin(\Vt )}, {sqrt(1-(\Vt /360)^2)*sin(20*\Vt )/(1-sqrt(1-(\Vt /360)^2)*cos(20*\Vt )))*cos(\Vt )}, {sin(20*\Vt )}); \draw [white,tdplot_screen_coords] (-5,-5) rectangle (5,5); \end {tikzpicture}

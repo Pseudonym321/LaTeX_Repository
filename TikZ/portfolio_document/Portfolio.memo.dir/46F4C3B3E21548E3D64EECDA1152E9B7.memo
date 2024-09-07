@@ -1,0 +1,5 @@
+\mmzMemo 
+\global \mmzContextExtra {}%
+%
+\mmzSource 
+\begin {tikzpicture} \begin {axis}[axis equal, enlargelimits = true, samples = 45, samples y = 45, axis lines = none, ticks = none, cyl/.style = {surf, black!30!, variable = \u , variable y = \v , z buffer = sort, faceted color=black!70!, }, ] \par \addplot 3[cyl, domain = -3:3, y domain = 0:360, ] ({cos(v)}, {sin(v)}, {min(u,abs(cos(v)),abs(sin(v)))}); \par \addplot 3[cyl, domain = -3:3, y domain = 0:360, ] ({min(u,-abs(cos(v)),-abs(sin(v)))}, {cos(v)}, {sin(v)}); \par \addplot 3[cyl, domain = 0:360, y domain = -3:3, ] ({cos(u)}, {max(v,abs(cos(u)),abs(sin(u)))}, {sin(u)}); \par \addplot 3[cyl, domain = -3:3, y domain = 0:360, ] ({max(u,abs(cos(v)),abs(sin(v)))}, {cos(v)}, {sin(v)}); \par \addplot 3[cyl, domain = -3:3, y domain = 0:360, ] ({cos(v)}, {sin(v)}, {max(u,abs(cos(v)),abs(sin(v)))}); \par \addplot 3[cyl, domain = 0:360, y domain = -3:3, ] ({cos(u)}, {min(-abs(cos(u)),-abs(sin(u)),v)}, {sin(u)}); \par \end {axis} \end {tikzpicture}

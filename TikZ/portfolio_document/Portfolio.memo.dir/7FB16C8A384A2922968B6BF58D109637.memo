@@ -1,0 +1,5 @@
+\mmzMemo 
+\global \mmzContextExtra {}%
+%
+\mmzSource 
+\begin {tikzpicture}[tdplot_main_coords, scale=1] \draw [rotate=30] (-4,-4,0) -- (-4,2.2,0) -- (7,2.2,0) -- (7,-4,0) -- cycle; \node at (0.8,-5,0) {$\overline {\mathbb {C}}$}; \draw [-latex] (0,0,-3) -- (0,0,2); \draw [tdplot_screen_coords] (0,0) circle [radius=1]; \tdplotsetrotatedcoords {0}{0}{0} \draw [tdplot_rotated_coords] (0,0) circle [radius=1]; \tdplotsetrotatedcoords {0}{21.8}{0} \path [tdplot_rotated_coords,spath/save=PcircS] (0,0) circle [radius=0.3714]; \path [tdplot_rotated_coords,spath/save=PcircL] (0,0) circle [radius=0.3714]; \path [fill,opacity=0.5,spath/use={PcircS, transform={shift={(1*0.35582,1*0,1*0.862)}}}]; \path [draw,spath/use={PcircS, transform={shift={(1*0.35582,1*0,1*0.862)}}}]; \draw [] (2.5,-3) -- (2.5,2); \draw [very thin] (0,0,1) -- (2.5,-2.2,0); \draw [very thin] (0,0,1) -- (2.5,1.5,0); \draw [very thin] (0,0,1) -- (2.5,0,0); \node [left] at (0,0,1) {$\scriptscriptstyle N$}; \end {tikzpicture}

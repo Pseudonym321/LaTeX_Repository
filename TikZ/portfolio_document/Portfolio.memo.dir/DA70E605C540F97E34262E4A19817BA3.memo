@@ -1,0 +1,5 @@
+\mmzMemo 
+\global \mmzContextExtra {}%
+%
+\mmzSource 
+\begin {tikzpicture}[tdplot_main_coords,scale=0.7] \draw [-latex] (-5,0,0) -- (5,0,0) node[pos=1]{$x$}; \draw [-latex] (0,-5,0) -- (0,5,0) node[pos=1]{$y$}; \draw [-latex] (0,0,-5) -- (0,0,5) node[pos=1]{$z$}; \draw [tdplot_screen_coords,blue] (0,0) circle(1); \par \par \par \foreach \Vn in {-5,-4,...,5}{ \draw [domain=-5:5,smooth,samples=50,variable=\Vt ,blue] plot ({\Vt },{\Vn }); \draw [domain=-5:5,smooth,samples=50,variable=\Vt ,blue] plot ({2*\Vt /(1+(\Vt )^2+(\Vn )^2)},{2*\Vn /(1+(\Vt )^2+(\Vn )^2)},{((\Vt )^2+(\Vn )^2-1)/(1+(\Vt )^2+(\Vn )^2)}); \par \par \draw [domain=-5:5,smooth,samples=50,variable=\Vt ,blue] plot ({\Vn },{\Vt }); \draw [domain=-5:5,smooth,samples=50,variable=\Vt ,blue] plot ({2*\Vn /(1+(\Vt )^2+(\Vn )^2)},{2*\Vt /(1+(\Vt )^2+(\Vn )^2)},{((\Vt )^2+(\Vn )^2-1)/(1+(\Vt )^2+(\Vn )^2)}); } \par \par \end {tikzpicture}
