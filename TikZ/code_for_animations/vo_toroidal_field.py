@@ -16,15 +16,15 @@ start = r'''
 
 end = r'''
 \tdplotsetmaincoords{45}{120}
-\begin{tikzpicture}[tdplot_main_coords]
+\begin{tikzpicture}[tdplot_main_coords,]
 \def \Vn {270}
 \def \Voo {60}
 \draw[white,tdplot_screen_coords] (-5,-3.5) rectangle (5,3.5);
-\clip[tdplot_screen_coords] (-5,-3.5) rectangle (5,3.5);
+\clip[tdplot_screen_coords] (-4,-2.5) rectangle (4,2.5);
 \draw[domain=90:\Vn,smooth,very thin,samples=500,variable=\Vt] plot (
-{(\Vt/360)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt))*sin(\Voo*\Vt)},
-{(\Vt/360)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt))*cos(\Voo*\Vt)},
-{sin(\Vo*\Vt)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt)))});
+{0.5*(\Vt/360)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt))*sin(\Voo*\Vt)},
+{0.5*(\Vt/360)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt))*cos(\Voo*\Vt)},
+{0.5*sin(\Vo*\Vt)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt)))});
 \end{tikzpicture}
 \end{frame}
 \end{document}
