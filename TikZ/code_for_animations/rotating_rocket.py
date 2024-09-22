@@ -13,91 +13,6 @@ preamble= r'''
 
 \usetikzlibrary{arrows.meta,decorations.pathreplacing}
 \usetikzlibrary{calc}
-\newcommand{\PtR}{0.065} % point radius
-\newcommand{\bkDot}[1]{\fill[tdplot_screen_coords] (#1) circle(\PtR);}
-
-\newcommand{\DotArrow}[2]{
-% Draws a vector without a terminal dot.
-% #1  - Point 1
-% #2  - Point 2
-\bkDot{#1}
-\draw
-[%%% START
-{-Stealth[round]},thick,
-shorten <=\PtR cm
-]%%% END
-(#1) -- ++(#2);
-}
-
-\newcommand{\DotArrowDot}[2]{
-% Draws a vector without a terminal dot.
-% #1  - Point 1
-% #2  - Point 2
-\bkDot{#1}
-\draw
-[%%% START
-{-Stealth[round]},thick,
-shorten <=\PtR cm,shorten >=\PtR cm
-]%%% END
-(#1) -- ++(#2) coordinate(IntentionallyLongName1);
-\bkDot{IntentionallyLongName1}
-}
-
-\newcommand{\LabelPath}[6]{
-% Labels a path
-% #1  - Start Coordinate
-% #2  - End Coordinate
-% #3  - Position along path
-% #4  - Relative X-POS
-% #5  - Relative Y-POS
-% #6  - The label
-\path
-[%%% START
-decoration={markings,
-mark=at position #3 with {\node at (#4,#5) {#6};},
-},
-postaction={decorate}
-]%%% END
-(#1) -- ++(#2);
-}
-
-\newcommand{\bkMark}{\draw[thick] (0,-2pt) -- (0,2pt);}
-\newcommand{\MarkPath}[5]{
-% START
-% END
-% START
-% STOP
-% STEP
-\path
-[%%% START
-decoration={markings,
-mark=between positions #3 and #4 step #5 with {\bkMark}, 
-},
-postaction={decorate}
-]%%% END
-(#1) -- ++(#2);
-}
-
-\newif\ifdrawAxes
-\pgfqkeys{/drawaxes}{show axes/.is if=drawAxes}
-\newcommand\xyGrid[5][]
-  {%
-    % Draws a grid in the x-y plane.
-    % #1  - optional axis
-    % #2  - xmin
-    % #3  - xmax
-    % #4  - ymin
-    % #5  - ymax
-    \pgfqkeys{/drawaxes}{#1}%
-    \foreach[parse=true] \Vx in {#2+0.2,#2+0.4,...,#3-0.2}{\draw[very thin,densely dotted] (\Vx,#4) -- (\Vx,#5);}
-    \foreach[parse=true] \Vy in {#4+0.2,#4+0.4,...,#5-0.2}{\draw[very thin,densely dotted] (#2,\Vy) -- (#3,\Vy);}
-    \foreach[parse=true] \Vy in {#4+1,#4+2,...,#5-1}{\draw[thin,densely dotted] (#2,\Vy) -- (#3,\Vy);}
-    \foreach[parse=true] \Vx in {#2+1,#2+2,...,#3-1}{\draw[thin,densely dotted] (\Vx,#4) -- (\Vx ,#5);}
-    \ifdrawAxes
-      \draw[-Classical TikZ Rightarrow] (#2,0) -- (#3,0);
-      \draw[-Classical TikZ Rightarrow] (0,#4) -- (0,#5);
-    \fi
-  }
 
 \newcommand\xyzGrid[4][]
   {%
@@ -127,11 +42,11 @@ postaction={decorate}
     \foreach[parse=true] \Vy in {1,2,...,#3-1}{\draw[thin,densely dotted] (0,\Vy,0) -- (0,\Vy,#4);}
     \foreach[parse=true] \Vz in {1,2,...,#4-1}{\draw[thin,densely dotted] (0,0,\Vz) -- (0,#3,\Vz);}
     %
-    \ifdrawAxes
+
       \draw[-Classical TikZ Rightarrow] (0,0) -- (#2,0);
       \draw[-Classical TikZ Rightarrow] (0,0) -- (0,#3);
       \draw[-Classical TikZ Rightarrow] (0,0) -- (0,0,#4);
-    \fi
+
   }
 \begin{document}
 \begin{frame}
@@ -144,7 +59,7 @@ postaction={decorate}
 '''
 
 postscript = r'''
-\tdplotsetrotatedcoords{\VarTheta}{30}{0}
+\tdplotsetrotatedcoords{\VarTheta}{20}{0}
 
 
 %same circle with points
