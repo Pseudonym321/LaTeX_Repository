@@ -2,7 +2,7 @@
 import numpy as np
 import Animation_Modules.animatetex as animatetex
 
-numiter = 24*3
+numiter = 24
 
 start= r'''
 \documentclass{beamer}
@@ -13,13 +13,12 @@ end = r'''
 \begin{document}
 \begin{frame}
 \centering
-\begin{tikzpicture}[scale=0.3]
-\draw[white] (-11,-11) rectangle (11,11);
+\begin{tikzpicture}
 \coordinate (O) at (0,0);
-\coordinate (A) at (1*\Vangle:4);
-\coordinate (B) at (-2*\Vangle:3);
-\coordinate (C) at (3*\Vangle:2);
-\coordinate (D) at (-4*\Vangle:1);
+\coordinate (A) at (1*\Vangle:1);
+\coordinate (B) at (-2*\Vangle:0.75);
+\coordinate (C) at (3*\Vangle:0.5);
+\coordinate (D) at (-4*\Vangle:0.25);
 \draw[] (O) -- (A) -- ++(B) -- ++(C) -- ++(D);
 \draw[] (O) -- (A) -- ++(B) -- ++(D) -- ++(C);
 \draw[] (O) -- (A) -- ++(C) -- ++(B) -- ++(D);
@@ -47,6 +46,8 @@ end = r'''
 \draw[] (O) -- (D) -- ++(B) -- ++(C) -- ++(A);
 \draw[] (O) -- (D) -- ++(C) -- ++(A) -- ++(B);
 \draw[] (O) -- (D) -- ++(C) -- ++(B) -- ++(A);
+
+\draw[white] (-3,-3) rectangle (3,3);
 \end{tikzpicture}
 \end{frame}
 \end{document}
