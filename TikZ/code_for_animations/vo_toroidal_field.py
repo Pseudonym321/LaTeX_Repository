@@ -2,7 +2,7 @@
 import numpy as np
 import Animation_Modules.animatetex as animatetex
 
-numiter = 24*2
+numiter = 24
 
 start = r'''
 \documentclass{beamer}
@@ -20,7 +20,7 @@ end = r'''
 \def \Vn {270}
 \def \Voo {60}
 \draw[white,tdplot_screen_coords] (-5,-3.5) rectangle (5,3.5);
-\clip[tdplot_screen_coords] (-4,-2.5) rectangle (4,2.5);
+\clip[tdplot_screen_coords] (-4,-3.5) rectangle (4,3.5);
 \draw[domain=90:\Vn,smooth,very thin,samples=500,variable=\Vt] plot (
 {0.5*(\Vt/360)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt))*sin(\Voo*\Vt)},
 {0.5*(\Vt/360)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt))*cos(\Voo*\Vt)},
@@ -40,13 +40,7 @@ def main():
         Void.
     """
     animatetex.before_loop()
-    for vo in np.linspace(8.5,11.5,numiter):
-        with open(animatetex.TeX_file, 'w') as f:
-            f.write(start)
-            f.write(r'\def \Vo {' + f'{vo}' + r'}')
-            f.write(end)
-        animatetex.during_loop()
-    for vo in np.linspace(11.5,8.5,numiter):
+    for vo in np.linspace(8.5,9,numiter//2):
         with open(animatetex.TeX_file, 'w') as f:
             f.write(start)
             f.write(r'\def \Vo {' + f'{vo}' + r'}')
