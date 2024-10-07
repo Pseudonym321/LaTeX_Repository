@@ -25,7 +25,7 @@ postaction={decorate}
 ]%%% END
 (0,0) arc[start angle=90, end angle=0, radius=5];
 \draw pic[draw,-,angle eccentricity=1.4, angle radius=0.3cm]{right angle=DeliberatelyLongName1--DeliberatelyLongName0--DeliberatelyLongName2};
-\draw[white] (-2,-2) rectangle (7,7);
+\draw[white] (-2,-2) rectangle (8,8);
 \end{tikzpicture}
 \end{frame}
 \end{document}
@@ -41,16 +41,16 @@ def main():
         Void.
     """
     animatetex.before_loop()
-    for angle in np.linspace(0,1,numiter//2):
+    for angle in np.linspace(0,0.8,numiter//2):
         with open(animatetex.TeX_file, 'w') as f:
             f.write(preamble)
             f.write(r'\newcommand{\Vt}{' +f'{angle}' +'}')
             f.write(postscript)
         animatetex.during_loop()
-    for angle in np.linspace(1,0,numiter//2):
+    for angle in np.linspace(0.8,0,numiter//2):
         with open(animatetex.TeX_file, 'w') as f:
             f.write(preamble)
-            f.write(r'\newcommand{\mytheta}{' +f'{angle}' +'}')
+            f.write(r'\newcommand{\Vt}{' +f'{angle}' +'}')
             f.write(postscript)
         animatetex.during_loop()
     animatetex.after_loop()
