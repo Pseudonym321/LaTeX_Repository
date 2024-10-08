@@ -20,12 +20,12 @@ postscript = r'''
 \begin{frame}
 \centering
 \tdplotsetmaincoords{60}{45}
-\begin{tikzpicture}[tdplot_main_coords,scale=0.5]
-\clip[tdplot_screen_coords,scale=2] (-3.5,-2.5) rectangle (3.5,2.5);
-\draw[white,tdplot_screen_coords,scale=2] (-3.5,-2.5) rectangle (3.5,2.5);
+\begin{tikzpicture}[tdplot_main_coords]
+\clip[tdplot_screen_coords] (-3.5,-2.5) rectangle (3.5,2.5);
+\draw[white,tdplot_screen_coords] (-3.5,-2.5) rectangle (3.5,2.5);
 \tdplotsetrotatedcoords{\VT}{\VT}{\VT}
 % latitude
-\pgfextra{\foreach \Vn in {0,30,...,330}{
+\pgfextra{\foreach \Vn in {0,10,...,350}{
 \draw[variable=\Vt,domain=0:360,smooth,samples=100,tdplot_rotated_coords] ({\sphereX{0}{\Vn}},{\sphereY{0}{\Vn}},{\sphereZ{0}{\Vn}}) plot ({\sphereX{\Vt}{\Vn}},{\sphereY{\Vt}{\Vn}},{\sphereZ{\Vt}{\Vn}}) -- cycle;
 \tdplottransformrotmain{\sphereX{0}{\Vn}}{\sphereY{0}{\Vn}}{\sphereZ{0}{\Vn}}
 \ifdim \tdplotresz pt<0.999pt
@@ -33,7 +33,7 @@ postscript = r'''
 \pgfmathsetmacro\lasty{\SPY{\tdplotresy}{\tdplotresz}}
 \fi
 \gdef\opacity{1}
-\foreach \Vt in {0,30,...,330} {
+\foreach \Vt in {0,5,...,355} {
 \tdplottransformrotmain{\sphereX{\Vt}{\Vn}}{\sphereY{\Vt}{\Vn}}{\sphereZ{\Vt}{\Vn}}
 \ifdim \tdplotresz pt<0.999pt
 \pgfmathsetmacro\Vx{\SPX{\tdplotresx}{\tdplotresz}}
@@ -50,7 +50,7 @@ postscript = r'''
 }
 }}
 %longitude
-\pgfextra{\foreach \Vn in {0,30,...,330}{
+\pgfextra{\foreach \Vn in {0,10,...,350}{
 \draw[variable=\Vt,domain=0:360,smooth,samples=100,tdplot_rotated_coords] ({\sphereX{\Vn}{0}},{\sphereY{\Vn}{0}},{\sphereZ{\Vn}{0}}) plot ({\sphereX{\Vn}{\Vt}},{\sphereY{\Vn}{\Vt}},{\sphereZ{\Vn}{\Vt}}) -- cycle;
 \tdplottransformrotmain{\sphereX{\Vn}{0}}{\sphereY{\Vn}{0}}{\sphereZ{\Vn}{0}}
 \ifdim \tdplotresz pt<0.999pt
@@ -58,7 +58,7 @@ postscript = r'''
 \pgfmathsetmacro\lasty{\SPY{\tdplotresy}{\tdplotresz}}
 \fi
 \gdef\opacity{1}
-\foreach \Vt in {0,30,...,330} {
+\foreach \Vt in {0,5,...,355} {
 \tdplottransformrotmain{\sphereX{\Vn}{\Vt}}{\sphereY{\Vn}{\Vt}}{\sphereZ{\Vn}{\Vt}}
 \ifdim \tdplotresz pt<0.999pt
 \pgfmathsetmacro\Vx{\SPX{\tdplotresx}{\tdplotresz}}
@@ -90,7 +90,7 @@ def main():
         Void.
     """
     animatetex.before_loop()
-    for theta in np.linspace(0,90,numiter):
+    for theta in np.linspace(0,40,numiter):
         with open(animatetex.TeX_file, 'w') as TeX:
             TeX.write(preamble)
             TeX.write(r'\newcommand{\VT}{' +f'{theta}' +'}')
