@@ -17,6 +17,9 @@ def before_loop():
     """
     file_names()
     make_merged()
+    make_temp()
+    append_pdfs(merged_pdf,pdf_file, temp_pdf)
+    rename_pdf()
 
 def file_names():
     """
