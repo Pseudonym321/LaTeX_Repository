@@ -168,8 +168,8 @@ postscript = r'''
 
         % Check if the dot product is positive
         \ifdim\currentDotProduct pt > -0.3 pt
-        \ifdim\lastz pt>-0.01pt
-        \ifdim\Vz pt>-0.01pt
+        \ifdim\lastz pt>-0.049pt
+        \ifdim\Vz pt>-0.049pt
             \draw[ultra thin] (\lastx,\lasty,\lastz) -- (\Vx,\Vy,\Vz);
         \fi\fi\fi
 \pgfmathsetmacro\lastx{\Vx}
@@ -208,8 +208,8 @@ postscript = r'''
 
         % Check if the dot product is positive
         \ifdim\currentDotProduct pt > -0.3 pt
-        \ifdim\lastz pt>-0.01pt
-        \ifdim\Vz pt>-0.01pt
+        \ifdim\lastz pt>-0.049pt
+        \ifdim\Vz pt>-0.049pt
             \draw[ultra thin] (\lastx,\lasty,\lastz) -- (\Vx,\Vy,\Vz);
         \fi\fi\fi
 \pgfmathsetmacro\lastx{\Vx}
@@ -240,8 +240,8 @@ postscript = r'''
 
         % Check if the dot product is positive
         \ifdim\currentDotProduct pt > -0.3 pt
-        \ifdim\lastz pt>-0.01pt
-        \ifdim\Vz pt>-0.01pt
+        \ifdim\lastz pt>-0.049pt
+        \ifdim\Vz pt>-0.049pt
 \draw[very thin,red] (\lastx,\lasty,\lastz) -- (\Vx,\Vy,\Vz);
 \fi\fi
 \fi
