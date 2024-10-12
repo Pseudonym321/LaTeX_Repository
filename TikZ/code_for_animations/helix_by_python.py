@@ -85,6 +85,7 @@ with open("TeX_file.tex", "w") as TeX:
         command = f"""
         \\fill[white] ({rect[0][0]},{rect[0][1]},{rect[0][2]}) -- ({rect[1][0]},{rect[1][1]},{rect[1][2]}) -- ({rect[2][0]},{rect[2][1]},{rect[2][2]}) -- ({rect[3][0]},{rect[3][1]},{rect[3][2]}) -- cycle;
         \\fill[opacity=0.5] ({rect[0][0]},{rect[0][1]},{rect[0][2]}) -- ({rect[1][0]},{rect[1][1]},{rect[1][2]}) -- ({rect[2][0]},{rect[2][1]},{rect[2][2]}) -- ({rect[3][0]},{rect[3][1]},{rect[3][2]}) -- cycle;
+        \\draw ({rect[0][0]},{rect[0][1]},{rect[0][2]}) -- ({rect[1][0]},{rect[1][1]},{rect[1][2]}) -- ({rect[2][0]},{rect[2][1]},{rect[2][2]}) -- ({rect[3][0]},{rect[3][1]},{rect[3][2]}) -- cycle;        
         """
         TeX.write(command)
     TeX.write(end)
