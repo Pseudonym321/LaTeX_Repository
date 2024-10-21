@@ -6,25 +6,9 @@ numiter = 24
 start= r'''
 \documentclass{beamer}
 \beamertemplatenavigationsymbolsempty
-%maths
-\usepackage{mathtools}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{amsfonts}
-\usepackage{autobreak}
-\usepackage{comment}
 %tikzpicture
 \usepackage{tikz}
-\usepackage{scalerel}
-\usepackage{pict2e}
-\usepackage{tkz-euclide}
-\usepackage{tikz-3dplot}
-\usetikzlibrary{calc}
-\usetikzlibrary{patterns,arrows.meta}
-\usetikzlibrary{shadows}
-\usetikzlibrary{external}
-\usetikzlibrary{decorations.pathreplacing,angles,quotes}
-\usetikzlibrary{perspective,spath3}
+\usetikzlibrary{arrows.meta}
 
 '''
 end = r'''
