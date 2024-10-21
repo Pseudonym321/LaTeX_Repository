@@ -2,7 +2,7 @@
 import numpy as np
 import Animation_Modules.animatetex as animatetex
 #i added this so i could save everything and make sure it was saved
-r=2.0
+radius=2.0
 L=8.0
 linspace_amount = 38
 numiter = 24
@@ -17,7 +17,7 @@ def x_input_function(x_input:float):
     Return:
         the x coordinates of the inverse stereographic projection of the points.
     """
-    return (2*x_input*r*np.abs((L**2)/(x_input**2+L**2))**(1/2))/np.abs(x_input**2+L**2)**(1/2)
+    return (2*x_input*radius*np.abs((L**2)/(x_input**2+L**2))**(1/2))/np.abs(x_input**2+L**2)**(1/2)
 
 def y_input_function_upper(x_input):
     """
@@ -28,7 +28,7 @@ def y_input_function_upper(x_input):
     Return:
         Void.
     """
-    return (np.abs(r**2-x_input**2)**(1/2)+L-r)
+    return (np.abs(radius**2-x_input**2)**(1/2)+L-radius)
 
 def y_input_function_lower(x_input):
     """
@@ -39,7 +39,7 @@ def y_input_function_lower(x_input):
     Return:
         Void.
     """
-    return (-np.abs(r**2-x_input**2)**(1/2)+L-r)
+    return (-np.abs(radius**2-x_input**2)**(1/2)+L-radius)
 
 # https://stackoverflow.com/questions/34372480/rotate-point-about-another-point-in-degrees-python
 import math
@@ -53,7 +53,7 @@ def rotate_x(x,y,theta): #rotate x,y around xo,yo by theta (rad)
     Return:
         Void.
     """
-    xr=math.cos(theta)*(x-0)-math.sin(theta)*(y-(L-r)) + 0
+    xr=math.cos(theta)*(x-0)-math.sin(theta)*(y-(L-radius)) + 0
     return xr
 
 def rotate_y(y,x,theta):
@@ -65,7 +65,7 @@ def rotate_y(y,x,theta):
     Return:
         Void.
     """
-    yr=math.sin(theta)*(x-0)+math.cos(theta)*(y-(L-r))  + (L-r)
+    yr=math.sin(theta)*(x-0)+math.cos(theta)*(y-(L-radius))  + (L-radius)
     return yr
 
 def rotate(angle):
