@@ -9,7 +9,8 @@ Purpose:
         2. Run and append the output of a LaTeX file to this PDF for
            each iteration of the animation.
         3. Remove the initial blank page after the loop terminates.
-    The core functionalities are encapsulated in three versatile functions:
+    The core functionalities are encapsulated in three versatile 
+    functions:
         1. animatetex.before_loop()
         2. animatetex.during_loop()
         3. animatetex.after_loop()
@@ -37,8 +38,8 @@ def before_loop():
     """
     file_names()
     make_merged()
-    make_temp()  # Creates a temporary PDF for later use.
-    append_pdfs(merged_pdf, pdf_file, temp_pdf)  # Merges the initial blank PDF and the temporary PDF.
+    make_temp()
+    append_pdfs(merged_pdf, pdf_file, temp_pdf)
     rename_pdf()
 
 def file_names():
@@ -50,7 +51,8 @@ def file_names():
     Returns: None
     """
     global TeX_file, pdf_file, output_directory, merged_temp, merged_pdf
-    output_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    output_directory = os.path.abspath(os.path.join(\
+        os.path.dirname(__file__), '..'))
     TeX_file = os.path.join(output_directory, "TeX_file.tex")
     pdf_file = os.path.join(output_directory, "TeX_file.pdf")
     merged_temp = 'merged_output_temp.pdf'
@@ -93,10 +95,14 @@ def during_loop():
     Parameters: None
     Returns: None
     """
-    compile_tex_to_pdf()  # Runs the LaTeX compilation.
-    make_temp()  # Prepares a new temporary PDF for the current iteration's output.
-    append_pdfs(merged_pdf, pdf_file, temp_pdf)  # Merges the current output with the accumulated PDF.
-    rename_pdf()  # Updates the merged PDF name to reflect the latest changes.
+    # Runs the LaTeX compilation.
+    compile_tex_to_pdf()
+    # Prepares a new temporary PDF for the current iteration's output.
+    make_temp() 
+    # Merges the current output with the accumulated PDF.
+    append_pdfs(merged_pdf, pdf_file, temp_pdf) 
+    # Updates the merged PDF name to reflect the latest changes.
+    rename_pdf()  
 
 def compile_tex_to_pdf():
     """
@@ -107,7 +113,8 @@ def compile_tex_to_pdf():
     Parameters: None
     Returns: None
     """
-    subprocess.run(['lualatex', '-output-directory', output_directory, TeX_file])
+    subprocess.run(['lualatex', '-output-directory', output_directory,\
+                     TeX_file])
 
 def append_pdfs(pdf1, pdf2, output_pdf):
     """
@@ -136,7 +143,9 @@ def append_pdfs(pdf1, pdf2, output_pdf):
     else:
         command = 'gs'  # For Unix-like systems (Linux, macOS)
 
-    subprocess.run([command, '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite', '-sOutputFile=' + output_pdf, os.path.abspath(pdf1), os.path.abspath(pdf2)])
+    subprocess.run([command, '-dBATCH', '-dNOPAUSE', '-q',\
+                     '-sDEVICE=pdfwrite', '-sOutputFile=' + output_pdf,\
+                          os.path.abspath(pdf1), os.path.abspath(pdf2)])
 
 def rename_pdf():
     """
@@ -158,7 +167,8 @@ def after_loop():
     Parameters: None
     Returns: None
     """
-    remove_first_page(merged_pdf, os.path.join(output_directory, 'final_output.pdf'))
+    remove_first_page(merged_pdf, os.path.join(output_directory,\
+                                                'final_output.pdf'))
     clean_up()
 
 def remove_first_page(input_pdf, output_pdf):
@@ -177,7 +187,8 @@ def remove_first_page(input_pdf, output_pdf):
     """
     pdf_reader = PdfReader(input_pdf)
     pdf_writer = PdfWriter()
-    for page_num in range(1, len(pdf_reader.pages)):  # Skips the first page.
+    # Skips the first page.
+    for page_num in range(1, len(pdf_reader.pages)):
         pdf_writer.add_page(pdf_reader.pages[page_num])
     with open(output_pdf, 'wb') as output_file:
         pdf_writer.write(output_file)
