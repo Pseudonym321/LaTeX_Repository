@@ -1,137 +1,164 @@
+"""
+File name: animatetex.py
+Author: Jasper Nice
+Date last modified: 10/20/2024
+Purpose:
+    This module simplifies the creation of LaTeX animations by 
+    condensing the code required to:
+        1. Create a blank PDF.
+        2. Run and append the output of a LaTeX file to this PDF for
+           each iteration of the animation.
+        3. Remove the initial blank page after the loop terminates.
+    The core functionalities are encapsulated in three versatile functions:
+        1. animatetex.before_loop()
+        2. animatetex.during_loop()
+        3. animatetex.after_loop()
+Credit: 
+    I acknowledge the use of AI, which assisted me in finding various
+    syntaxes to achieve this goal. However, I did substantial work on 
+    the earlier iterations myself.
+"""
+
 import subprocess
 import shutil
 import os
 from pypdf import PdfReader, PdfWriter
-import subprocess
 from reportlab.pdfgen import canvas
 
 def before_loop():
     """
     Purpose:
-        Calls file_names() and make_merged() to save space.
-    Parameters:
-        No parameters.
-    Return:
-        Void.
+        Executes tasks required before running LaTeX. This includes 
+        setting path destinations and creating an initial blank PDF.
     
+    Parameters: None
+    Returns: None
     """
     file_names()
     make_merged()
-    make_temp()
-    append_pdfs(merged_pdf,pdf_file, temp_pdf)
+    make_temp()  # Creates a temporary PDF for later use.
+    append_pdfs(merged_pdf, pdf_file, temp_pdf)  # Merges the initial blank PDF and the temporary PDF.
     rename_pdf()
 
 def file_names():
     """
     Purpose:
-        Declares the names/paths for various temporary files.
-    Parameters:
-        No parameters.
-    Return:
-        Void.
+        Sets the file names for the entire operation.
+    
+    Parameters: None
+    Returns: None
     """
     global TeX_file, pdf_file, output_directory, merged_temp, merged_pdf
-    TeX_file = "TeX_file.tex"
-    pdf_file = "TeX_file.pdf"
-    output_directory = r"C:\Users\twill\OneDrive\Documents\Files\Professional\GitHub\LaTeX_Repository"
+    output_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    TeX_file = os.path.join(output_directory, "TeX_file.tex")
+    pdf_file = os.path.join(output_directory, "TeX_file.pdf")
     merged_temp = 'merged_output_temp.pdf'
     merged_pdf = 'merged_output.pdf'
 
 def make_merged():
     """
     Purpose:
-        Makes an initial pdf page, which the gif is appended to - hence remove_first_page()
-    Parameters:
-        No parameters.
-    Return:
-        Void.
+        Initializes the path for the merged output PDF.
+    
+    Parameters: None
+    Returns: None
     """
     global merged_pdf
     merged_pdf = os.path.join(output_directory, merged_pdf)
 
+def make_temp():
+    """
+    Purpose:
+        Creates a temporary PDF file, which serves as a placeholder for 
+        each iteration's output before merging it into the final PDF.
+    
+    Parameters: None
+    Returns: None
+    """
+    global temp_pdf
+    temp_pdf = os.path.join(output_directory, merged_temp)
+    
+    c = canvas.Canvas(temp_pdf)
+    c.save()  # Creates an empty PDF for future appending.
+
 def during_loop():
     """
     Purpose:
-        Calls the functions which compile the tex and append its pdf to the merged pdf.
-    Parameters:
-        No parameters.
-    Return:
-        Void.
+        Compiles the LaTeX file and appends its output to the merged
+        PDF. This function generates a new temporary PDF for each 
+        iteration, allowing the accumulated outputs to be merged in 
+        the final document.
+    
+    Parameters: None
+    Returns: None
     """
-    compile_tex_to_pdf()
-    make_temp()
-    append_pdfs(merged_pdf,pdf_file, temp_pdf)
-    rename_pdf()
-
+    compile_tex_to_pdf()  # Runs the LaTeX compilation.
+    make_temp()  # Prepares a new temporary PDF for the current iteration's output.
+    append_pdfs(merged_pdf, pdf_file, temp_pdf)  # Merges the current output with the accumulated PDF.
+    rename_pdf()  # Updates the merged PDF name to reflect the latest changes.
 
 def compile_tex_to_pdf():
     """
     Purpose:
-        Function to compile a TeX file to PDF
-    Parameters:
-        No parameters.
-    Return:
-        Void.
+        Compiles the LaTeX file using LuaLaTeX, generating a PDF 
+        output that is ready to be merged with the existing PDFs.
+    
+    Parameters: None
+    Returns: None
     """
-    #subprocess.run(['pdflatex', TeX_file])
-    subprocess.run(['lualatex', TeX_file])
+    subprocess.run(['lualatex', '-output-directory', output_directory, TeX_file])
 
-
-def make_temp():
-    """
-    Purpose:
-        Makes a temporary pdf.
-    Parameters:
-        No parameters.
-    Return:
-        Void.
-    """
-    global temp_pdf
-    #parent_directory = os.path.dirname(os.path.abspath(__file__))
-    parent_directory = output_directory
-    temp_pdf = os.path.join(parent_directory, merged_temp)
-
-    c = canvas.Canvas(temp_pdf)
-    c.save()
+import subprocess
+import sys
 
 def append_pdfs(pdf1, pdf2, output_pdf):
     """
     Purpose:
-        Appends the new pdf to the merged one.
+        Combines two PDF files into a single output PDF. 
+        This function appends the output PDF generated from the LaTeX 
+        compilation (`pdf2`) to the accumulated output PDF (`pdf1`), 
+        effectively consolidating all animation frames into one final 
+        document.
+
     Parameters:
-        pdf1 - initial (big) pdf
-        pdf2 - attached pdf
-        output_pdf - temp pdf
-    Return:
-        Void.
+        pdf1 (str): The path of the accumulated output PDF, which 
+        contains all previously merged content.
+        pdf2 (str): The path of the newly generated PDF from the 
+        LaTeX compilation, representing the latest iteration of the 
+        animation.
+        output_pdf (str): The path where the merged PDF will be saved, 
+        which will include the combined content of both `pdf1` and 
+        `pdf2`.
+
+    Returns: None
     """
-    ### FOR CHEAP LAPTOP ###
-    #subprocess.run(['gswin64', '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite', '-sOutputFile=' + output_pdf, os.path.abspath(pdf1), os.path.abspath(pdf2)])
-    ### FOR FAST LAPTOP ###
-    subprocess.run(['gswin64c', '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite', '-sOutputFile=' + output_pdf, os.path.abspath(pdf1), os.path.abspath(pdf2)])
-    ### FOR MIKTEX %%%
-    #subprocess.run(['mgs', '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite', '-sOutputFile=' + output_pdf, pdf1, pdf2])
+    # Determine the appropriate Ghostscript command
+    if sys.platform.startswith('win'):
+        command = 'gswin64c'  # For Windows users
+    else:
+        command = 'gs'  # For Unix-like systems (Linux, macOS)
+
+    subprocess.run([command, '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite', '-sOutputFile=' + output_pdf, os.path.abspath(pdf1), os.path.abspath(pdf2)])
 
 def rename_pdf():
     """
     Purpose:
-        Rename the temporary merged PDF to the original merged PDF
-    Parameters:
-        No parameters.
-    Return:
-        Void.
+        Renames the temporary PDF to the final merged output PDF, 
+        ensuring that the most recent changes are preserved.
+    
+    Parameters: None
+    Returns: None
     """
     shutil.move(temp_pdf, merged_pdf)
-    #subprocess.run(['mv', 'merged_output_temp.pdf', merged_pdf])
 
 def after_loop():
     """
     Purpose:
-        Calls the functions which remove the initial temporary pdf and all those pesky tex files.
-    Parameters:
-        No parameters.
-    Return:
-        Void.
+        Removes the first blank page from the final merged PDF and 
+        cleans up temporary LaTeX files that are no longer needed.
+    
+    Parameters: None
+    Returns: None
     """
     remove_first_page(merged_pdf, os.path.join(output_directory, 'final_output.pdf'))
     clean_up()
@@ -139,66 +166,39 @@ def after_loop():
 def remove_first_page(input_pdf, output_pdf):
     """
     Purpose:
-        Removes the first page of the merged pdf.
+        Removes the first page from the input PDF and saves the result
+        as a new PDF, typically to eliminate the initial blank page 
+        created during the process.
+    
     Parameters:
-        input_pdf - the merged pdf
-        output_pdf - the final document
-    Return:
-        Void.
+        input_pdf (str): The path of the input PDF from which to remove
+        the first page.
+        output_pdf (str): The path where the output PDF will be saved.
+    
+    Returns: None
     """
     pdf_reader = PdfReader(input_pdf)
     pdf_writer = PdfWriter()
-
-    # Add all pages except the first one
-    for page_num in range(1, len(pdf_reader.pages)):
+    for page_num in range(1, len(pdf_reader.pages)):  # Skips the first page.
         pdf_writer.add_page(pdf_reader.pages[page_num])
-
     with open(output_pdf, 'wb') as output_file:
         pdf_writer.write(output_file)
 
 def clean_up():
     """
     Purpose:
-        Removes all those pesky tex files.
-    Parameters:
-        No parameters.
-    Return:
-        Void.
+        Removes all temporary LaTeX files generated during the process,
+        ensuring that no unnecessary files remain.
+    
+    Parameters: None
+    Returns: None
     """
-    try:
-        os.remove('TeX_file.tex')
-    except FileNotFoundError:
-        pass
-    try:
-        os.remove('TeX_file.pdf')
-    except FileNotFoundError:
-        pass
-    try:
-        os.remove('TeX_file.aux')
-    except FileNotFoundError:
-        pass
-    try:
-        os.remove('TeX_file.log')
-    except FileNotFoundError:
-        pass
-    try:
-        os.remove('TeX_file.nav')
-    except FileNotFoundError:
-        pass
-    try:
-        os.remove('TeX_file.out')
-    except FileNotFoundError:
-        pass
-    try:
-        os.remove('TeX_file.snm')
-    except FileNotFoundError:
-        pass
-    try:
-        os.remove('TeX_file.toc')
-    except FileNotFoundError:
-        pass
+    for ext in ['tex', 'pdf', 'aux', 'log', 'nav', 'out', 'snm', 'toc']:
+        try:
+            os.remove(os.path.join(output_directory, f'TeX_file.{ext}'))
+        except FileNotFoundError:
+            pass
     try:
         os.remove(merged_pdf)
     except FileNotFoundError:
         pass
-
