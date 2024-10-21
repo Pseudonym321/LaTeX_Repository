@@ -54,8 +54,8 @@ def file_names():
         os.path.dirname(__file__), '..'))
     TeX_file = os.path.join(output_directory, "TeX_file.tex")
     pdf_file = os.path.join(output_directory, "TeX_file.pdf")
-    merged_temp = 'merged_output_temp.pdf'
-    merged_pdf = 'merged_output.pdf'
+    merged_temp = 'TeX_file_merged_output_temp.pdf'
+    merged_pdf = 'TeX_file_merged_output.pdf'
 
 def make_merged():
     """
