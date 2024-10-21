@@ -127,7 +127,7 @@ def draw_path(x,y):
 def main():
     """
     Purpose:
-        Makes a gif which demonstrates that circles are homeomorphic to lines.
+        Makes a gif which demonstrates that a circle with a point removed is homeomorphic to the real line.
     Parameters:
         No parameters.
     Return:
