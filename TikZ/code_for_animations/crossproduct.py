@@ -9,7 +9,7 @@ start = r'''
 \beamertemplatenavigationsymbolsempty
 %maths
 \usepackage{mathtools,amsmath,amssymb,amsfonts,physics}
-\usepackage{tikz,scalerel,pict2e,ifthen}
+\usepackage{tikz}
 \usepackage{tikz-3dplot,tkz-euclide}
 \usetikzlibrary{calc,patterns,arrows.meta}
 \usetikzlibrary{shadows,external,perspective,spath3}
