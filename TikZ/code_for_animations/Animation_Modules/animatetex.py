@@ -1,7 +1,6 @@
 """
 File name: animatetex.py
 Author: Jasper Nice
-Date last modified: 10/20/2024
 Purpose:
     This module simplifies the creation of LaTeX animations by 
     condensing the code required to:

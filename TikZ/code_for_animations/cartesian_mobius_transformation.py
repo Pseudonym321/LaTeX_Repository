@@ -1,3 +1,16 @@
+"""
+File name: cartesian_mobius_transformation.py
+Author: Jasper Nice
+Purpose:
+    This file produces a sphere and a plane. The plane is initially 
+    mapped onto the sphere, then the sphere is rotated. What we see is 
+    the inverse mapping of that rotated map back onto the plane. We use
+    stereographic projection to perform the mapping. All together, the
+    concept is called a Mobius transformation of the cartesian grid.
+Credit:
+    I became aware of this concept from a professor who was interested 
+    in my development.
+"""
 
 import numpy as np
 import Animation_Modules.animatetex as animatetex
@@ -8,23 +21,90 @@ start= r'''
 \documentclass{beamer}
 \beamertemplatenavigationsymbolsempty
 
+% packages
 \usepackage{tikz}
 \usepackage{tikz-3dplot}
 
-\newcommand{\sphereX}[2]{cos(#2)*cos(#1)}
-\newcommand{\sphereY}[2]{cos(#2)*sin(#1)}
-\newcommand{\sphereZ}[2]{sin(#2)}
-\newcommand{\SPX}[2]{#1/(1-#2)}
-\newcommand{\SPY}[2]{#1/(1-#2)}
-\newcommand{\ISPX}[2]{2*(#1)/(1+(#1)^2+(#2)^2)}
-\newcommand{\ISPY}[2]{2*(#2)/(1+(#1)^2+(#2)^2)}
-\newcommand{\ISPZ}[2]{(-1+(#1)^2+(#2)^2)/(1+(#1)^2+(#2)^2)}
-'''
-end = r'''
+% commands
+\newcommand{\sphereX}[2]{
+% Purpose: Gives the 'x' coordinate on a sphere, for a given 
+% polar-azimuthal coordinate.
+% Parameters:
+% #1  - azimuthal angle
+% #2  - polar angle
+cos(#2)*cos(#1)
+}
 
+\newcommand{\sphereY}[2]{
+% Purpose: Gives the 'y' coordinate on a sphere, for a given 
+% polar-azimuthal coordinate.
+% Parameters:
+% #1  - azimuthal angle
+% #2  - polar angle
+cos(#2)*sin(#1)
+}
+
+\newcommand{\sphereZ}[2]{
+% Purpose: Gives the 'z' coordinate on a sphere, for a given 
+% polar-azimuthal coordinate. [Note: the azimuthal angle is redundant.]
+% Parameters:
+% #1  - azimuthal angle
+% #2  - polar angle
+sin(#2)
+}
+
+\newcommand{\SPX}[2]{
+% Purpose: Gives the 'x' coordinate of the stereographic projection of a 
+% point on a sphere.
+% Parameters:
+% #1  - the x value of a point on the sphere
+% #2  - the z value of that point
+#1/(1-#2)
+}
+
+\newcommand{\SPY}[2]{
+% Purpose: Gives the 'y' coordinate of the stereographic projection of a 
+% point on a sphere.
+% Parameters:
+% #1  - the x value of a point on the sphere
+% #2  - the z value of that point
+#1/(1-#2)
+}
+
+\newcommand{\ISPX}[2]{
+% Purpose: Given a point on the plane, gives the 'x' coordinate of its 
+% inverse stereographic projection.
+% Parameters:
+% #1  - the x value
+% #2  - the y value
+2*(#1)/(1+(#1)^2+(#2)^2)
+}
+
+\newcommand{\ISPY}[2]{
+% Purpose: Given a point on the plane, gives the 'y' coordinate of its 
+% inverse stereographic projection.
+% Parameters:
+% #1  - the x value
+% #2  - the y value
+2*(#2)/(1+(#1)^2+(#2)^2)
+}
+
+\newcommand{\ISPZ}[2]{
+% Purpose: Given a point on the plane, gives the 'z' coordinate of its 
+% inverse stereographic projection.
+% Parameters:
+% #1  - the x value
+% #2  - the y value
+(-1+(#1)^2+(#2)^2)/(1+(#1)^2+(#2)^2)
+}
+'''
+
+end = r'''
 \begin{document}
     \begin{frame}
         \centering
+
+        % sets the viewing angle
         \tdplotsetmaincoords{60}{45}
         \begin{tikzpicture}[tdplot_main_coords]
 

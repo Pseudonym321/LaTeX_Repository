@@ -1,12 +1,14 @@
 """
 File name: bumpy_sphere.py
 Author: Jasper Nice
-Date last modified: 10/20/2024
 Purpose:
     This file produces a spinning "bumpy sphere." This sphere is defined
     in spherical coordinates, where the radii oscilate over different 
     theta and phi values - producing a wavy sphere. This particular
     example is taken from Stewart's Calculus.
+Credit:
+    There was a member in the TeX.SE community who first showed me 
+    tikz-3dplot when I was initially trying to draw this.
 """
 
 import numpy as np
