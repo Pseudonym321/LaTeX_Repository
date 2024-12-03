@@ -1,0 +1,880 @@
+\documentclass{article}
+\usepackage{amssymb}
+
+\usepackage{tikz}
+\usetikzlibrary{spath3}
+
+
+\usepackage{tikz-3dplot}
+\usepackage{tkz-euclide}
+
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\usepackage{memoize}
+\begin{document}
+
+\begin{center}
+\tdplotsetmaincoords{60}{110}
+\begin{tikzpicture}[scale=2,line join=bevel,tdplot_main_coords,%
+fill opacity=.5]
+\tdplotsetpolarplotrange{0}{360}{0}{360}
+\tdplotsphericalsurfaceplot[parametricfill]{72}{36}%
+{1+(1/5)*sin(6*\tdplottheta)*sin(5*\tdplotphi)}{black}{\tdplotphi}%
+{\path[color=black,thick,->] (0,0,0)
+-- (1,0,0) node[anchor=north east]{};}%
+{\path[color=black,thick,->] (0,0,0)
+-- (0,1,0) node[anchor=north west]{};}%
+{\path[color=black,thick,->] (0,0,0)
+-- (0,0,1) node[anchor=south]{};}%
+\end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+\begin{tikzpicture}
+\begin{axis}[
+    view={0}{90},
+    domain=-1:1,
+    y domain=-1:1,
+    xmax=1, ymax=1, ymin=-1,
+    zmin=-1, zmax=1,
+    samples=21
+]
+\addplot3 [quiver={u={1/(sqrt(1+(2*x-y)^2))}, v={(2*x-y)/(sqrt(1+(2*x-y)^2))}, scale arrows=0.075, every arrow/.append style={-}}] (x,y,0);
+\end{axis}
+\end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+\centering
+\tdplotsetmaincoords{0}{90}
+\begin{tikzpicture}[tdplot_main_coords]
+\draw[white,tdplot_main_coords] (-4.5,-3.5) rectangle (4.5,5);
+\tdplotsetrotatedcoords{0}{0}{0}
+\draw[tdplot_rotated_coords,domain=90:360,smooth,very thin,samples=5000,variable=\Vt] plot ({sqrt(1-(\Vt/360)^2)*sin(40*\Vt)/(1-sqrt(1-(\Vt/360)^2)*cos(40*\Vt)))},{(\Vt/360)/(1-sqrt(1-(\Vt/360)^2)*cos(40*\Vt))*cos(3*\Vt)},{(\Vt/360)/(1-sqrt(1-(\Vt/360)^2)*cos(40*\Vt))*sin(3*\Vt)});
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\tdplotsetmaincoords{0}{0}
+\begin{tikzpicture}[tdplot_main_coords, scale=1.5]
+\draw[tdplot_screen_coords] (0,0) circle [radius=1];
+\foreach \t in {0, 10, ..., 350}{
+\begin{scope}
+%\clip[] (-2,-2,0) rectangle (2,2,2);
+\tdplotsetrotatedcoords{0}{\t}{0}
+\draw[tdplot_rotated_coords,very thin] (0,0) circle [radius=1];
+\tdplotsetrotatedcoords{90}{90}{0}
+\draw[tdplot_rotated_coords,very thin] (0,0,{sin(\t)}) circle [radius={cos(\t)}];
+\end{scope}}
+\end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+\tdplotsetmaincoords{55}{60}
+\begin{tikzpicture}[tdplot_main_coords, scale=1]
+\draw[rotate=30] (-4,-4,0) -- (-4,2.2,0) -- (7,2.2,0) -- (7,-4,0) -- cycle;
+\node at (0.8,-5,0) {$\overline{\mathbb{C}}$};
+\draw[-latex] (0,0,-3) -- (0,0,2); % z-axis
+\draw[tdplot_screen_coords] (0,0) circle [radius=1]; % outer circle
+\tdplotsetrotatedcoords{0}{0}{0}
+\draw[tdplot_rotated_coords] (0,0) circle [radius=1]; % base intersection
+\tdplotsetrotatedcoords{0}{21.8}{0}
+\path[tdplot_rotated_coords,spath/save=PcircS] (0,0) circle [radius=0.3714];
+\path[tdplot_rotated_coords,spath/save=PcircL] (0,0) circle [radius=0.3714];
+\path[fill,opacity=0.5,spath/use={PcircS, transform={shift={(1*0.35582,1*0,1*0.862)}}}]; % NOTE: we swapped x and y for simplicity
+\path[draw,spath/use={PcircS, transform={shift={(1*0.35582,1*0,1*0.862)}}}]; % NOTE: we swapped x and y for simplicity
+\draw[] (2.5,-3) -- (2.5,2);
+\draw[very thin] (0,0,1) -- (2.5,-2.2,0);
+\draw[very thin] (0,0,1) -- (2.5,1.5,0);
+\draw[very thin] (0,0,1) -- (2.5,0,0);
+\node[left] at (0,0,1) {$\scriptscriptstyle N$};
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\tdplotsetmaincoords{55}{10}
+\begin{tikzpicture}[tdplot_main_coords, scale=1]
+\draw[] (-2,-4,0) -- (-2,3,0) -- (6,3,0) -- (6,-4,0) -- cycle;
+\node at (-1.6,-3.2,0) {$\overline{\mathbb{C}}$};
+\draw[-latex] (0,0,-2) -- (0,0,2); % z-axis
+%\draw[-latex] (-2,0,0) -- (7,0,0) node[pos=1,above right]{$y,\zeta$}; % y-axis (swapped with the x for simplicity)
+\draw[tdplot_screen_coords] (0,0) circle [radius=1]; % outer circle
+\tdplotsetrotatedcoords{0}{0}{0}
+\draw[tdplot_rotated_coords] (0,0) circle [radius=1]; % base intersection
+\tdplotsetrotatedcoords{0}{37.87}{0}
+\path[tdplot_rotated_coords,spath/save=PcircS] (0,0) circle [radius=0.26];
+\path[tdplot_rotated_coords,spath/save=PcircL] (0,0) circle [radius=0.26];
+\path[fill,opacity=0.5,spath/use={PcircS, transform={shift={(1*0.5923,1*0,1*0.7615)}}}]; % NOTE: we swapped x and y for simplicity
+\path[draw,spath/use={PcircL, transform={shift={(1*0.5923,1*0,1*0.7615)}}}]; % NOTE: we swapped x and y for simplicity
+\draw[fill,opacity=0.5] (3.5,0) circle [radius=1.5];
+\draw[] (3.5,0) circle [radius=1.5];
+\draw[very thin] (0,0,1) -- (3.5,0,0);
+\draw[very thin] (0,0,1) -- (3.5,-1.5,0);
+\draw[very thin] (0,0,1) -- (3.5,1.5,0);
+\draw[very thin] (0,0,1) -- (2,0,0);
+\node[left] at (0,0,1) {$\scriptscriptstyle N$};
+\draw[fill,opacity=0.5] (0,0) circle [radius=0.26];
+\path[spath/save=PcircS] (0,0) circle [radius=0.4877];\
+\path[fill,opacity=0.5,spath/use={PcircS, transform={shift={(1*0,1*0,1*-0.873)}}}]; % NOTE: we swapped x and y for simplicity
+% intersection circle\
+\draw[very thin,dashed] (0,0,1) -- (0.4877,0,-0.873);
+\draw[very thin,dashed] (0,0,1) -- (-0.4877,0,-0.873);
+\end{tikzpicture}
+\end{center}
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw[-latex] (-3,0) -- (3,0) node[pos=1,below right]{$x$};
+\draw[-latex] (0,-3) -- (0,3) node[pos=1,above left]{$y$};
+
+\draw[dashed] (0,0) -- (36:3);
+\draw[dashed] (0,0) -- (72:3);
+\draw[dashed] (0,0) -- (108:3);
+\draw[dashed] (0,0) -- (144:3);
+
+\draw[dashed, blue] (1,0) arc [start angle=0, end angle=180, radius = 1];
+\draw[dashed, blue] (2,0) arc [start angle=0, end angle=180, radius = 2];
+
+\coordinate (A) at (144:2);
+\coordinate (B) at (108:1/2);
+\coordinate (C) at (72:1);
+\coordinate (D) at (36:1.5);
+
+\fill[black] (A) circle [radius=0.1];
+\fill[red] (B) circle [radius=0.1];
+\fill[green] (C) circle [radius=0.1];
+\fill[blue] (D) circle [radius=0.1];
+
+\draw[red] (A) to [bend right=20pt] (D);
+\draw[red] (B) to [bend right] (C);
+
+\draw[dashed, green] (0,0) -- (-36:3);
+\draw[dashed, green] (0,0) -- (-72:3);
+\draw[dashed, green] (0,0) -- (-108:3);
+\draw[dashed, green] (0,0) -- (-144:3);
+
+\draw[dashed, green] (1,0) arc [start angle=0, end angle=-180, radius = 1];
+\draw[dashed, green] (2,0) arc [start angle=0, end angle=-180, radius = 2];
+
+\coordinate (IA) at (-144:0.5);
+\coordinate (IB) at (-108:2);
+\coordinate (IC) at (-72:1);
+\coordinate (ID) at (-36:2/3);
+
+\fill[black] (IA) circle [radius=0.1];
+\fill[red] (IB) circle [radius=0.1];
+\fill[green] (IC) circle [radius=0.1];
+\fill[blue] (ID) circle [radius=0.1];
+
+\draw[red] (IA) to [bend right=100, min distance=1.5cm] (ID);
+\draw[red] (IB) to [bend right=70, min distance=0.7cm] (IC);
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[scale=2]
+\draw[-latex] (-0.5,0) -- (2,0);
+\draw[-latex] (0,-2) -- (0,2);
+
+\draw[] (0,1) arc [start angle=90, end angle=-90, radius=1];
+
+\draw[] (0,0) -- (30:2);
+\draw[] (0,0) -- (-30:2);
+
+\draw[dashed] (0,0) -- (15:2);
+\draw[dashed] (0,0) -- (-15:2);
+
+\fill[] (30:5/8) circle [radius=0.035] node[above]{$p$};
+\fill[] (30:7/8) circle [radius=0.035] node[above left]{$q$};
+\fill[] (15:6/8) circle [radius=0.035] node[below right]{$z$};
+
+\draw[green] (15:6/8) -- (30:5/8);
+\draw[green] (15:6/8) -- (30:7/8);
+
+\draw plot [smooth] coordinates {(0:0.8)  (15:6/8)  (30:5/8) (60:0.5)}; 
+\draw plot [smooth] coordinates {(0:0.6)  (15:6/8)  (30:7/8) (40:1.5)}; 
+
+\fill[] (-30:1.6) circle [radius=0.035] node[below]{$p^\prime$};
+\fill[] (-30:1.143) circle [radius=0.035] node[below]{$q^\prime$};
+\fill[] (-15:4/3) circle [radius=0.035] node[below right]{$z^\prime$};
+
+\draw[green] (-15:8/6) -- (-30:8/5);
+\draw[green] (-15:8/6) -- (-30:8/7);
+
+\draw[black] (-15:6/8) -- (-30:5/8);
+\draw[black] (-15:6/8) -- (-30:7/8);
+
+\draw[dotted] (30:5/8) -- (-30:5/8);
+\draw[dotted] (30:7/8) -- (-30:7/8);
+\draw[dotted] (15:6/8) -- (-15:6/8);
+
+\draw plot [smooth] coordinates {(0:5/4)  (-15:8/6)  (-30:8/5) (-60:2)}; 
+\draw plot [smooth] coordinates {(0:5/3)  (-15:8/6)  (-30:8/7) (-40:2/3)};
+
+\coordinate (z) at (15:6/8);
+\coordinate (p) at (30:5/8);
+\coordinate (q) at (30:7/8);
+
+\draw pic["$\alpha$",draw,-,angle eccentricity=1.4, angle radius=0.3cm]{angle=q--z--p};
+
+\coordinate (iz) at (-15:8/6);
+\coordinate (ip) at (-30:8/5);
+\coordinate (iq) at (-30:8/7);
+
+\draw pic["$\alpha$",draw,-,angle eccentricity=1.4, angle radius=0.3cm]{angle=iq--iz--ip};
+\end{tikzpicture}
+\end{center}
+
+
+
+
+\begin{center}
+\tdplotsetmaincoords{45}{30}
+\begin{tikzpicture}[tdplot_main_coords, scale=1]
+\draw[domain=-360:360,very thick,smooth,samples=500,variable=\t,red]
+  plot ({sin(4*\t)*(1-(\t/360)^2)^(0.5)},\t/360,{cos(4*\t)*(1-(\t/360)^2)^0.5});
+\draw[tdplot_screen_coords,very thin] (0,0) circle [radius=1];
+\foreach \t in {0, 10, ..., 350}{
+\begin{scope}
+%\clip[] (-2,-2,0) rectangle (2,2,2);
+\tdplotsetrotatedcoords{0}{\t}{0}
+\draw[tdplot_rotated_coords,very thin] (0,0) circle [radius=1];
+\tdplotsetrotatedcoords{90}{90}{0}
+\draw[tdplot_rotated_coords,very thin] (0,0,{sin(\t)}) circle [radius={cos(\t)}];
+\end{scope}}
+\end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+\tdplotsetmaincoords{45}{45}
+\begin{tikzpicture}[tdplot_main_coords]
+\clip[tdplot_screen_coords] (-4.5,-3.5) rectangle (4.5,3.5);
+\draw[-latex] (-10,0,0) -- (10,0,0) node[pos=1]{$x$};
+\draw[-latex] (0,-10,0) -- (0,10,0) node[pos=1]{$y$};
+%\draw[-latex] (0,0,-10) -- (0,0,10) node[pos=1]{$z$};
+
+\newcommand{\PSz}[2]{(cos(#2)*cos(#1))}
+\newcommand{\PSy}[2]{(cos(#2)*sin(#1))}
+\newcommand{\PSx}[2]{(sin(#2))}
+
+\newcommand{\ASx}[2]{(sin(#1))}
+\newcommand{\ASy}[2]{(cos(#1)*sin(#2))}
+\newcommand{\ASz}[2]{(cos(#1)*cos(#2))}
+
+\newcommand{\Lx}[1]{(#1/360)}
+\newcommand{\Ly}[1]{(sqrt(1-(#1/360)^2)*cos(3*#1))}
+\newcommand{\Lz}[1]{(sqrt(1-(#1/360)^2)*sin(3*#1))}
+
+\newcommand{\SPx}[2]{((#1)/(1-#2))}
+\newcommand{\SPy}[2]{((#1)/(1-#2))}
+
+
+\foreach \Vk in {0,10,...,350}{
+%%% POLAR %%%
+\draw[domain=0:360,smooth,samples=50,variable=\Vt,blue]  plot ({\PSx{\Vt}{\Vk}},{\PSy{\Vt}{\Vk}},{\PSz{\Vt}{\Vk}});
+%%% AZIMUTH %%%
+\draw[domain=0:360,smooth,samples=50,variable=\Vt,blue]  plot ({\ASx{\Vt}{\Vk}},{\ASy{\Vt}{\Vk}},{\ASz{\Vt}{\Vk}});
+}
+
+\foreach \Vk in {10,20,...,80}{
+%%% AZIMUTHAL PROJECTION %%%
+\draw[domain=0:360,smooth,samples=50,variable=\Vt,blue] 
+plot ({\SPx{\ASx{\Vt}{\Vk}}{\ASz{\Vt}{\Vk}}},{\SPy{\ASy{\Vt}{\Vk}}{\ASz{\Vt}{\Vk}}});
+%%% POLAR PROJECTION %%%
+\draw[domain=0:360,smooth,samples=50,variable=\Vt,blue] 
+plot ({-\SPx{\PSx{\Vt}{\Vk}}{\PSz{\Vt}{\Vk}}},{\SPy{\PSy{\Vt}{\Vk}}{\PSz{\Vt}{\Vk}}});
+}
+\foreach \Vk in {100,110,...,170}{
+%%% AZIMUTHAL PROJECTION %%%
+\draw[domain=0:360,smooth,samples=50,variable=\Vt,blue] 
+plot ({\SPx{\ASx{\Vt}{\Vk}}{\ASz{\Vt}{\Vk}}},{\SPy{\ASy{\Vt}{\Vk}}{\ASz{\Vt}{\Vk}}});
+%%% POLAR PROJECTION %%%
+\draw[domain=0:360,smooth,samples=50,variable=\Vt,blue] 
+plot ({\SPx{\PSx{\Vt}{\Vk}}{\PSz{\Vt}{\Vk}}},{\SPy{\PSy{\Vt}{\Vk}}{\PSz{\Vt}{\Vk}}});
+}
+
+\draw[domain=-360:360,smooth,samples=50,variable=\Vt,red]  plot ({\Lx{\Vt}},{\Ly{\Vt}},{\Lz{\Vt}});
+\draw[domain=-360:360,smooth,samples=500,variable=\Vt,red] 
+plot ({\SPx{\Lx{\Vt}}{\Lz{\Vt}}},{\SPy{\Ly{\Vt}}{\Lz{\Vt}}});
+
+\end{tikzpicture}
+\end{center}
+
+
+
+
+\begin{center}
+\begin{tikzpicture}
+\draw[thick,-latex] (1,1) -- (1,9) node[pos=1,left=5pt] {$y$}; % y-axis
+\draw[thick,-latex] (1,1) -- (9,1) node[pos=1,below=5pt] {$x$}; % x-axis
+\node[below left] at (1,1) {$O$};
+\coordinate (LI) at (2.5,3); % make coordinates for pic right angles
+\coordinate (RI) at (7.5,7); % make coordinates for pic right angles
+\coordinate (O) at (5,5); % make coordinates for pic right angles
+\draw[] (LI) -- (RI); % initial radial line
+\coordinate (LG) at (2.5,5); % make coordinates for pic right angles
+\coordinate (RG) at (7.5,5); % make coordinates for pic right angles
+\coordinate (LF) at (5.5559,1.8471); % coordinate
+\coordinate (RF) at (4.4441,8.15292); % coordinate
+
+\draw[] (LF) -- (RF); % final line
+
+\draw[-latex] (LI) arc [start angle=180+38.6598, end angle=280, radius=3.20156]; % left arc
+\draw[-latex] (RI) arc [start angle=38.6598, end angle=100, radius=3.20156]; % right arc
+
+%%% ORIGIN DASHES %%%
+\draw[dashed] (1,5) -- (5,5);
+\node[left] at (1,5) {$O_y$};
+\draw[dashed] (5,5) -- (5,1);
+\node[below] at (5,1) {$O_x$};
+
+%%% INITIAL DASHES %%%
+\draw[dashed] (LI) -- (LI -| 1,0) node[pos=1,left] {$y_1$};
+\draw[dashed] (LI) -- (LI |- 0,1) node[pos=1,below] {$x_1$};
+
+%%% FINAL DASHES %%%
+\draw[dashed] (RI) -- (RI -| 1,0) node[pos=1,left] {$y_2$};
+\draw[dashed] (RI) -- (RI |- 0,1) node[pos=1,below] {$x_2$};
+
+
+\draw[green] (LI) -- (LG) -- (RG) -- (RI); % green stuff
+\draw pic["$\phi$",-latex,draw,angle eccentricity=1.4, angle radius=0.6cm,green]{angle=RG--O--RI}; % angle
+\draw pic["$\phi$",-latex,draw,angle eccentricity=1.4, angle radius=0.6cm,green]{angle=LG--O--LI}; % angle
+\draw pic["",-,draw,angle eccentricity=1.4, angle radius=0.35cm,green]{right angle=O--RG--RI}; % angle
+\draw pic["",-,draw,angle eccentricity=1.4, angle radius=0.35cm,green]{right angle=LI--LG--O}; % angle
+\draw pic["$\theta$",-latex,draw,angle eccentricity=1.4, angle radius=0.6cm]{angle=RI--O--RF}; % angle
+\draw pic["$\theta$",-latex,draw,angle eccentricity=1.4, angle radius=0.6cm]{angle=LI--O--LF}; % angle
+
+
+%%% MUSTBE ON TOP %%%
+\fill[] (O) circle [radius=0.07]; % origin of circle
+\fill[] (LI) circle [radius=0.07]; % left point original
+\fill[] (RI) circle [radius=0.07]; % right point original
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+
+\tdplotsetmaincoords{30}{90}
+\begin{tikzpicture}[tdplot_main_coords]
+
+%%% DEFINITIONS %%%
+\def \Vazi {0}
+
+%%% OUTTER ELLIPSE %%%
+\draw[very thin,tdplot_screen_coords] (0,0,0) circle(1);
+%\draw[-latex] (-3,0,0) -- (3,0,0) node[pos=1]{$x$};
+%\draw[-latex] (0,-3,0) -- (0,3,0) node[pos=1]{$y$};
+%\draw[-latex] (0,0,-3) -- (0,0,3) node[pos=1]{$z$};
+
+
+%%% FOREACH LOOP %%%
+\foreach \Vthe in {0, 10, ..., 350}{
+%%% LONGITUTE %%%
+\tdplotsetrotatedcoords{\Vazi-90}{\Vthe}{0}
+\path[tdplot_rotated_coords,very thin,spath/save=pathname] (0,0,0) circle(1);
+\path[draw,very thin,spath/use={pathname, transform={shift={({0},{0},{0})}}}];
+%%% LATITUTE %%%
+\tdplotsetrotatedcoords{\Vazi}{90}{0}
+\path[tdplot_rotated_coords,very thin,spath/save=pathname] (0,0,0) circle [radius={cos(\Vthe)}];
+\path[tdplot_rotated_coords,draw,very thin,spath/use={pathname, transform={shift={({0},{0},{sin(\Vthe)})}}}];
+%%% MAGNETIC FIELD %%%
+\foreach \Vdist in {40,50,60}{
+\tdplotsetrotatedcoords{\Vazi-90}{\Vthe}{0}
+\path[tdplot_rotated_coords,very thin,spath/save=pathname] ({1/cos(\Vdist)},0,0) circle({sqrt(1/(cos(\Vdist))^2-cos(\Vdist))});
+\path[draw,very thin,spath/use={pathname, transform={shift={({0},{0},{0})}}}];}
+}
+\end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+\begin{tikzpicture}[scale=3]
+\begin{axis}[%
+        axis equal,
+        enlargelimits = true,
+        %samples = 45, samples y = 45,
+        axis lines = none, ticks = none,
+        cyl/.style = {%
+                surf,
+                black!30!,
+                variable = \u,
+                variable y = \v,
+                z buffer = sort,
+                faceted color=black!70!,
+                },
+        %view/h = 125, view/v = 25
+        ]
+
+    \addplot3[%         (-) Z-SEMIAXIS
+        cyl,
+        domain = -3:3,
+        y domain = 0:360,
+        ] ({cos(v)}, {sin(v)}, {min(u,abs(cos(v)),abs(sin(v)))});
+
+    \addplot3[%         (-) X-SEMIAXIS
+        cyl,
+        domain = -3:3,
+        y domain = 0:360,
+        ] ({min(u,-abs(cos(v)),-abs(sin(v)))}, {cos(v)}, {sin(v)});
+
+    \addplot3[%         (+) Y-SEMIAXIS
+        cyl,
+        domain = 0:360,
+        y domain = -3:3,
+        ] ({cos(u)}, {max(v,abs(cos(u)),abs(sin(u)))}, {sin(u)});
+
+    \addplot3[%         (+) X-SEMIAXIS
+        cyl,
+        domain = -3:3,
+        y domain = 0:360,
+        ] ({max(u,abs(cos(v)),abs(sin(v)))}, {cos(v)}, {sin(v)});
+
+    \addplot3[%         (+) X-SEMIAXIS
+        cyl,
+        domain = -3:3,
+        y domain = 0:360,
+        ] ({cos(v)}, {sin(v)}, {max(u,abs(cos(v)),abs(sin(v)))});
+
+    \addplot3[%         (-) Y-SEMIAXIS
+        cyl,
+        domain = 0:360,
+        y domain = -3:3,
+        ] ({cos(u)}, {min(-abs(cos(u)),-abs(sin(u)),v)}, {sin(u)});
+
+    \end{axis}
+\end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+\centering
+\tdplotsetmaincoords{60}{-110}
+\begin{tikzpicture}[tdplot_main_coords]
+%%% AXES %%%
+%\draw[-latex] (-3,0,0) -- (3,0,0) node[pos=1]{$x$};
+%\draw[-latex] (0,-3,0) -- (0,3,0) node[pos=1]{$y$};
+%\draw[-latex] (0,0,-3) -- (0,0,3) node[pos=1]{$z$};
+\clip[tdplot_screen_coords] (-3,-3) rectangle (3,3);
+\def \Vt {10}
+\foreach \Vtheta in {30,40,...,250}{
+\tdplotsetrotatedcoords{\Vtheta+90}{0}{0}
+\draw[tdplot_rotated_coords,domain=0:360,smooth,variable=\Vp] plot (0,{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*sin(\Vp)+(1/(cos(\Vt)))},{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*cos(\Vp)});
+}
+\foreach \Vtheta in {0,10,...,350}{
+\draw[domain=20:240,smooth,variable=\Vp] plot ({((1/(cos(\Vt)))+cos(\Vtheta)*sqrt((1/((cos(\Vt))^2))-cos(\Vt)))*sin(\Vp)},{((1/(cos(\Vt)))+cos(\Vtheta)*sqrt((1/((cos(\Vt))^2))-cos(\Vt)))*cos(\Vp)},{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*sin(\Vtheta)});
+}
+\draw[domain=30+180:250+180,samples=300,red,smooth,variable=\Vp] 
+plot ({((1/(cos(\Vt)))+(sqrt((1/((cos(\Vt))^2))-cos(\Vt))*cos(10*\Vp)))*cos(\Vp)},
+{((1/(cos(\Vt)))+(sqrt((1/((cos(\Vt))^2))-cos(\Vt))*cos(10*\Vp)))*sin(\Vp)},
+{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*sin(10*\Vp)});
+
+
+
+
+\def \Vt {40}
+\foreach \Vtheta in {30,40,...,250}{
+\tdplotsetrotatedcoords{\Vtheta+90}{0}{0}
+\draw[tdplot_rotated_coords,domain=0:360,smooth,variable=\Vp] plot (0,{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*sin(\Vp)+(1/(cos(\Vt)))},{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*cos(\Vp)});
+}
+\foreach \Vtheta in {0,10,...,350}{
+\draw[domain=20:240,smooth,variable=\Vp] plot ({((1/(cos(\Vt)))+cos(\Vtheta)*sqrt((1/((cos(\Vt))^2))-cos(\Vt)))*sin(\Vp)},{((1/(cos(\Vt)))+cos(\Vtheta)*sqrt((1/((cos(\Vt))^2))-cos(\Vt)))*cos(\Vp)},{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*sin(\Vtheta)});
+}
+\draw[domain=30+180:250+180,samples=50,red,smooth,variable=\Vp] 
+plot ({((1/(cos(\Vt)))+(sqrt((1/((cos(\Vt))^2))-cos(\Vt))*cos(10*\Vp)))*cos(\Vp)},
+{((1/(cos(\Vt)))+(sqrt((1/((cos(\Vt))^2))-cos(\Vt))*cos(10*\Vp)))*sin(\Vp)},
+{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*sin(10*\Vp)});
+
+
+\def \Vt {70}
+\foreach \Vtheta in {30,40,...,250}{
+\tdplotsetrotatedcoords{\Vtheta+90}{0}{0}
+\draw[tdplot_rotated_coords,domain=0:360,smooth,variable=\Vp] plot (0,{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*sin(\Vp)+(1/(cos(\Vt)))},{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*cos(\Vp)});
+}
+\foreach \Vtheta in {0,10,...,350}{
+\draw[domain=20:240,smooth,variable=\Vp] plot ({((1/(cos(\Vt)))+cos(\Vtheta)*sqrt((1/((cos(\Vt))^2))-cos(\Vt)))*sin(\Vp)},{((1/(cos(\Vt)))+cos(\Vtheta)*sqrt((1/((cos(\Vt))^2))-cos(\Vt)))*cos(\Vp)},{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*sin(\Vtheta)});
+}
+\draw[domain=30+180:250+180,samples=50,red,smooth,variable=\Vp] 
+plot ({((1/(cos(\Vt)))+(sqrt((1/((cos(\Vt))^2))-cos(\Vt))*cos(10*\Vp)))*cos(\Vp)},
+{((1/(cos(\Vt)))+(sqrt((1/((cos(\Vt))^2))-cos(\Vt))*cos(10*\Vp)))*sin(\Vp)},
+{sqrt((1/((cos(\Vt))^2))-cos(\Vt))*sin(10*\Vp)});
+
+\end{tikzpicture}
+\end{center}
+
+
+
+\begin{center}
+\newcommand{\Sphx}[2]{(sin(#2)*cos(#1))}
+\newcommand{\Sphy}[2]{(sin(#2)*sin(#1))}
+\newcommand{\Sphz}[2]{(cos(#2))}
+\newcommand{\Sphr}[2]{(sqrt(\Sphx{#1}{#1}^2+\Sphz{#1}{#1}^2+\Sphz{#1}{#1}^2))}
+\newcommand{\SPx}[2]{(\Sphx{#1}{#2}/(1-\Sphz{#1}{#2}))}
+\newcommand{\SPy}[2]{(\Sphy{#1}{#2}/(1-\Sphz{#1}{#2}))}
+
+\def \azimuth {100}
+\tdplotsetmaincoords{60}{\azimuth}
+\begin{tikzpicture}[tdplot_main_coords,scale=3]
+%%% AXES %%%
+\begin{scope}
+% DRAW Z LINE %
+\draw[-latex,very thin] (0,0,-1.5) -- (0,0,1.5);
+% BLANK OUT PART ON TOP %
+\fill[tdplot_screen_coords,white] (0,0) circle(1);
+\draw[densely dashed,very thin] (0,0,-1.5) -- (0,0,1.5);
+% DRAW INITIAL XY LINES %
+\draw[very thin,-latex] (-2.5,0,0) -- (2.5,0,0) node[pos=1,below] {$\scriptstyle x,\xi,\mbox{\scriptsize Re}(z)$};
+\draw[-latex,very thin] (0,-1.5,0) -- (0,1.5,0) node[pos=1,below]{$\scriptstyle y,\eta,\mbox{\scriptsize Im}(z)$};
+% BLANK OUT PARTS ON TOP %
+\tdplotsetrotatedcoords{180}{0}{0}
+\fill[tdplot_rotated_coords,white] ({cos(\azimuth)},{sin(\azimuth)}) arc [start angle=\azimuth, end angle={\azimuth+180}, radius=1] -- cycle;
+\fill[tdplot_screen_coords,white] ({cos(0)},{sin(0)}) arc [start angle=0, end angle=180, radius=1] -- cycle;
+% FINAL LINES %
+\draw[very thin,densely dashed] (-2.5,0,0) -- (2.5,0,0);
+\draw[very thin,densely dashed] (0,-1.5,0) -- (0,1.5,0);
+\draw[densely dashed,very thin] (0,0,-1.5) -- (0,0,1.5);
+\draw[very thin] (0,0,1) -- (0,0,1.5);
+\end{scope}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%%% RIEMANN SPHERE %%%
+%%%%%%%%%%%%%%%%%%%%%%
+% SCREEN CIRCLE
+\draw[tdplot_screen_coords,very thin] (0,0) circle(1);
+%%% XY-PLANE CIRCLE %%%
+\tdplotsetrotatedcoords{0}{0}{0}
+\draw[tdplot_rotated_coords,densely dashed,very thin] (\azimuth:1) arc [start angle=\azimuth, end angle={\azimuth+180}, radius=1];
+\draw[tdplot_rotated_coords,very thin] (\azimuth:1) arc [start angle=\azimuth, end angle={\azimuth-180}, radius=1];
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% THETA AND PHI %%%
+\newcommand{\Vthe}{60}
+\newcommand{\Vphi}{60}
+
+%%% COORDINATES %%%
+\coordinate (O) at (0,0);
+\coordinate (P) at ({\Sphx{\Vthe}{\Vphi}},{\Sphy{\Vthe}{\Vphi}},{\Sphz{\Vthe}{\Vphi}});
+\coordinate (Pn) at ({\Sphx{\Vthe}{\Vphi}},{\Sphy{\Vthe}{\Vphi}},{0});
+\coordinate (N) at (0,0,1);
+\coordinate (S) at (0,0,-1);
+\coordinate (Q) at ({\Sphx{\Vthe+180}{180-\Vphi}},{\Sphy{\Vthe+180}{180-\Vphi}},{\Sphz{\Vthe+180}{180-\Vphi}});
+\coordinate (z) at ({\SPx{\Vthe}{\Vphi}},{\SPy{\Vthe}{\Vphi}});
+\coordinate (W) at ({\SPx{\Vthe+180}{180-\Vphi}},{\SPy{\Vthe+180}{180-\Vphi}});
+
+%%% GEOMETRIC CONSTRUCTIONS %%%
+\draw[very thin] (O) -- (P) -- (Pn);
+\draw[very thin] (N) -- (z) -- (O);
+\draw[very thin] (O) -- (Q);
+\draw[dashed,very thin] (N) -- (Q);
+\draw[very thin] (O) -- (W);
+\draw[-latex,very thin] (0.25,0) arc [start angle=0, end angle=\Vthe,radius=0.25] node[pos=0.5,below]{$\scriptstyle \theta$};
+\draw[-latex,very thin] (0.15,0) arc [start angle=0, end angle=\Vthe+180,radius=0.15] node[pos=0.95,above]{$\scriptstyle \theta_w$};
+\tdplotsetrotatedcoords{\Vthe}{0}{0}
+\draw[tdplot_rotated_coords,very thin,-latex,smooth,variable=\Vt,domain=90:90-\Vphi] plot ({0.3*cos(\Vt)},{0},{0.3*sin(\Vt)}) node[pos=0,above right=5pt,scale=1/3]{$\scriptstyle \phi$};
+\draw pic[draw,-,angle eccentricity=1.4, angle radius=0.2cm]{right angle=O--Pn--P};
+
+%%% POINTS %%%
+\path[tdplot_screen_coords,spath/save=point] (0,0,0) circle(0.025);
+\fill[][spath/use={point, transform={shift={(W)}}}] node[above left]{$\scriptstyle W$};
+\fill[][spath/use={point, transform={shift={(N)}}}] node[above left]{$\scriptstyle N$};
+\fill[][spath/use={point, transform={shift={(P)}}}] node[above right]{$\scriptstyle P$};
+\fill[][spath/use={point, transform={shift={(z)}}}] node[right]{$\scriptstyle z$};
+\fill[][spath/use={point, transform={shift={(Q)}}}] node[above left]{$\scriptstyle Q$};
+\fill[][spath/use={point, transform={shift={(O)}}}] node[below left=5pt]{$\scriptstyle O$};
+\fill[][spath/use={point, transform={shift={(S)}}}] node[right]{$\scriptstyle S$};
+
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\tdplotsetmaincoords{65}{165}
+\begin{tikzpicture}[tdplot_main_coords, scale=2.5]
+
+%%% axes %%%
+% make dashed when inside or behind the riemann sphere
+\draw[-latex] (-2,0,0) -- (2,0,0) node[pos=1,below left]{$x,\xi$}; % x-axis
+\draw[-latex] (0,-3,0) -- (0,3,0) node[pos=1,below right]{$y,\eta$}; % y-axis
+\draw[-latex] (0,0,-2) -- (0,0,2) node[pos=1,above right]{$z,\zeta$}; % z-axis
+
+\draw[tdplot_screen_coords] (0,0) circle [radius=1]; % outer circle
+%\tdplotsetrotatedcoords{0}{0}{0}
+%\draw[tdplot_rotated_coords] (0,0) circle [radius=1]; % xy circle
+\tdplotsetrotatedcoords{0}{90}{0}
+\draw[tdplot_rotated_coords] (0,0) circle [radius=1]; % yz circle
+%\tdplotsetrotatedcoords{90}{90}{0}
+%\draw[tdplot_rotated_coords] (0,0) circle [radius=1]; % xz circle - not aesthetically pleasing.
+
+\path[tdplot_rotated_coords,spath/save=name] (0,0) circle [radius=0.866];
+\path[draw,spath/use={name, transform={shift={(2.5*0.5,4*0,4*0)}}}]; % circle by intersection of S by x=1/2
+% draw circles first, so you can blank out the right parts
+\path[tdplot_screen_coords,spath/save=name2] (0,0,0) circle [radius=0.025];
+\path[fill,spath/use={name2, transform={shift={(2.5*0.5,2.5*0.5,2.5*0.71)}}}]; % point P
+\draw[blue] (0,0,1) -- (1.71,1.71,0) node[below]{$z$}; % blue line
+
+% base coords
+\coordinate (O) at (0,0,0);
+\node[above right] at (O) {$\scriptscriptstyle O$};
+\coordinate (P) at (0.5,0.5,0.71);
+\node[left] at (P) {$\scriptscriptstyle P$};
+\coordinate (Q) at (0,0.5,0.71);
+\node[above] at (Q) {$\scriptscriptstyle Q$};
+\coordinate (Pp) at (0.5,-0.5,-0.71);
+\node[below right] at (Pp) {$\scriptscriptstyle P^\prime$};
+\coordinate (Qp) at (0,-0.5,-0.71);
+\node[below] at (Qp) {$\scriptscriptstyle Q^\prime$};
+\coordinate (N) at (0,0,1);
+\node[above right,blue] at (N) {$\scriptscriptstyle N$};
+\coordinate (S) at (0,0,0.71);
+\node[left,blue] at (S) {$\scriptscriptstyle \zeta$};
+\coordinate (n) at (0,0.5,0);
+\node[below,blue] at (n) {$\scriptscriptstyle\eta$};
+\coordinate (nS) at (0,0,-0.71);
+\node[right,blue] at (nS) {$\scriptscriptstyle -\zeta$};
+\coordinate (nn) at (0,-0.5,0);
+\node[above,blue] at (nn) {$\scriptscriptstyle-\eta$};
+\coordinate (B) at (0.5,0,0);
+\node[above,red] at (B) {$\scriptscriptstyle B$};
+% find w too...
+\draw[dashed] (n) -- (Q) -- (S);
+\draw[dashed] (nn) -- (Qp) -- (nS);
+\draw[dashed] (Qp) -- (Q) -- (P) -- (Pp) -- (Qp);
+\draw[blue,dashed] (N) -- (Pp);
+
+\path[tdplot_screen_coords,spath/save=name2] (0,0,0) circle [radius=0.025];
+\path[fill,spath/use={name2, transform={shift={(2.5*0,2.5*0,2.5*1)}}}]; % point N
+
+\path[tdplot_screen_coords,spath/save=name2] (0,0,0) circle [radius=0.025];
+\path[draw,spath/use={name2, transform={shift={(2.5*0.5,2.5*0,2.5*0)}}}]; % point B
+
+\path[tdplot_screen_coords,spath/save=name2] (0,0,0) circle [radius=0.025];
+\path[draw,spath/use={name2, transform={shift={(2.5*0.5,-2.5*0.5,-2.5*0.71)}}}]; % point Pp
+
+\path[tdplot_screen_coords,spath/save=name2] (0,0,0) circle [radius=0.025];
+\path[draw,spath/use={name2, transform={shift={(2.5*0,-2.5*0.5,-2.5*0.71)}}}]; % point Qp
+
+\path[tdplot_screen_coords,spath/save=name2] (0,0,0) circle [radius=0.025];
+\path[draw,spath/use={name2, transform={shift={(2.5*0,2.5*0.5,2.5*0.71)}}}]; % point Q
+
+\path[tdplot_screen_coords,spath/save=name2] (0,0,0) circle [radius=0.025];
+\path[draw,spath/use={name2, transform={shift={(2.5*0,2.5*0,-2.5*1)}}}]; % point SP
+\node[blue,above right] at (0,0,-1) {$\scriptscriptstyle S$};
+\end{tikzpicture}
+\end{center}
+
+
+
+\begin{center}
+
+\tdplotsetmaincoords{65}{165}
+\begin{tikzpicture}[tdplot_main_coords]
+\draw[tdplot_screen_coords] (0,0) circle [radius=1];
+\foreach \t in {0, 10, ..., 350}{
+\begin{scope}
+%\clip[] (-2,-2,0) rectangle (2,2,2);
+\tdplotsetrotatedcoords{90}{\t}{0}
+\draw[tdplot_rotated_coords,very thin] (0,0) circle [radius=1];
+\tdplotsetrotatedcoords{180}{90}{0}
+\draw[tdplot_rotated_coords,very thin] (0,0,{sin(\t)}) circle [radius={cos(\t)}];
+\end{scope}}
+\clip[tdplot_screen_coords] (-5,-3) rectangle (5,3);
+\draw[tdplot_screen_coords,white] (-4.9,-2.9) rectangle (4.9,2.9);
+\foreach \k in {10,20,...,80}{
+%%% on C %%%
+\draw[] ({1/cos(\k)},0) circle [radius={sqrt(1/(cos(\k)^2)-cos(\k))}];
+\draw[] (0,{-sin(\k)/cos(\k)}) circle [radius={1/cos(\k)}];
+}
+\foreach \k in {100,110,...,170}{
+%%% on C %%%
+\draw[] ({1/cos(\k)},0) circle [radius={sqrt(1/(abs(cos(\k))^2)-abs(cos(\k)))}];
+\draw[] (0,{-sin(\k)/cos(\k)}) circle [radius={1/cos(\k)}];
+}
+\draw[] (0,0) circle [radius=1];
+\draw[] (0,-7,0) -- (0,7,0); % circle at infinity
+\draw[] (-7,0,0) -- (7,0,0); % circle at infinity
+
+%%% axes %%%
+\draw[-latex,thick] (-2,0,0) -- (2,0,0) node[pos=1,below left]{$x,\xi$}; % x-axis
+\draw[-latex,thick] (0,-3.5,0) -- (0,3.5,0) node[pos=1,below right]{$y,\eta$}; % y-axis
+\draw[-latex,thick] (0,0,-2) -- (0,0,1.5) node[pos=1,above right]{$z,\zeta$}; % z-axis
+\end{tikzpicture}
+\end{center}
+
+
+
+\begin{center}
+
+\newcommand{\Sphx}[2]{(sin(#2)*cos(#1))}
+\newcommand{\Sphy}[2]{(sin(#2)*sin(#1))}
+\newcommand{\Sphz}[2]{(cos(#2))}
+\newcommand{\SP}[2]{(#1/(1-#2))}
+\newcommand{\Vpolar}{30}
+\tdplotsetmaincoords{45}{45}
+\begin{tikzpicture}[tdplot_main_coords,scale=0.7]
+\draw[-latex] (-5,0,0) -- (5,0,0) node[pos=1]{$x$};
+\draw[-latex] (0,-5,0) -- (0,5,0) node[pos=1]{$y$};
+\draw[-latex] (0,0,-5) -- (0,0,5) node[pos=1]{$z$};
+\draw[tdplot_screen_coords,blue] (0,0) circle(1);
+
+
+
+\foreach \Vn in {-5,-4,...,5}{
+%%% PARALLEL LINES X %%%
+\draw[domain=-5:5,smooth,samples=50,variable=\Vt,blue] plot ({\Vt},{\Vn});
+%%% ON SIGMA %%%
+\draw[domain=-5:5,smooth,samples=50,variable=\Vt,blue] plot ({2*\Vt/(1+(\Vt)^2+(\Vn)^2)},{2*\Vn/(1+(\Vt)^2+(\Vn)^2)},{((\Vt)^2+(\Vn)^2-1)/(1+(\Vt)^2+(\Vn)^2)});
+
+
+%%% PARALLEL LINES Y %%%
+\draw[domain=-5:5,smooth,samples=50,variable=\Vt,blue] plot ({\Vn},{\Vt});
+%%% ON SIGMA %%%
+\draw[domain=-5:5,smooth,samples=50,variable=\Vt,blue] plot ({2*\Vn/(1+(\Vt)^2+(\Vn)^2)},{2*\Vt/(1+(\Vt)^2+(\Vn)^2)},{((\Vt)^2+(\Vn)^2-1)/(1+(\Vt)^2+(\Vn)^2)});
+}
+
+
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+
+\def \az {40}
+\def \p {0}
+\def \polar {65}
+\def \azimuth {120}
+\tdplotsetmaincoords{\polar}{\azimuth}
+\begin{tikzpicture}[tdplot_main_coords]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% COORDINATE AXES AND GRID %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\draw[-latex] (-4,0,0) -- (4,0,0) node[pos=1,below left]{$x$};
+\draw[-latex] (0,-4,0) -- (0,4,0) node[pos=1,below right]{$y$};
+\draw[] (-3.75,-3.75) -- (-3.75,3.75) -- (3.75,3.75) -- (3.75,-3.75) -- cycle;
+\foreach \x in {-3.75,-3.5,...,3.75}{
+\draw[thin,dotted] (\x,-3.75) -- (\x,3.75);}
+\foreach \y in {-3.75,-3.5,...,3.75}{
+\draw[thin,dotted] (-3.75,\y) -- (3.75,\y);}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% BLANK OUT PARTS ON TOP %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tdplotsetrotatedcoords{180+\az}{0}{0}
+\fill[tdplot_rotated_coords,white] ({cos(\azimuth)},{sin(\azimuth)}) arc [start angle=\azimuth, end angle={\azimuth+180}, radius=1] -- cycle;
+\fill[tdplot_screen_coords,white] ({cos(0)},{sin(0)}) arc [start angle=0, end angle=180, radius=1] -- cycle;
+
+%%%%%%%%%%%%%%%%%%%%%%
+%%% RIEMANN SPHERE %%%
+%%%%%%%%%%%%%%%%%%%%%%
+% SCREEN CIRCLE
+\draw[tdplot_screen_coords,thin] (1,0) arc [start angle=0, end angle=180,radius=1];
+\draw[tdplot_screen_coords,densely dashed,thin] (1,0) arc [start angle=0, end angle=-180,radius=1];
+%%% NORTH POLE %%%
+\path[tdplot_screen_coords,spath/save=pathname] (0,0) circle [radius=0.045];
+\path[fill,spath/use={pathname, transform={shift={(0,0,1)}}}];
+%%% XY-PLANE CIRCLE %%%
+\tdplotsetrotatedcoords{0}{0}{0}
+\draw[tdplot_rotated_coords,densely dashed,thin] (\azimuth:1) arc [start angle=\azimuth, end angle={\azimuth+180}, radius=1];
+\draw[tdplot_rotated_coords] (\azimuth:1) arc [start angle=\azimuth, end angle={\azimuth-180}, radius=1];
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\foreach \x in {0.25,0.5,...,3.5}{
+%%% RED %%%
+\tdplotsetrotatedcoords{0+\az}{{atan(1/\x)}}{0+\az}
+\path[tdplot_rotated_coords,spath/save=name] (0,0) circle [radius={sqrt(((2*\x)/(1+(\x)^2))^2+((-2)/(1+(\x)^2))^2)/2}];
+\path[draw,red,spath/use={name, transform={shift={({cos(\az)*\x/(1+(\x)^2)},{sin(\az)*\x/(1+(\x)^2)},{((((\x)^2-1)/((\x)^2+1))+1)/2})}}}];
+%%% BLUE %%%
+\tdplotsetrotatedcoords{90+\az}{{atan(1/\x)}}{0+\az}
+\path[tdplot_rotated_coords,spath/save=name] (0,0) circle [radius={sqrt(((2*\x)/(1+(\x)^2))^2+((-2)/(1+(\x)^2))^2)/2}];
+\path[draw,blue,spath/use={name,transform={shift={({-sin(\az)*\x/(1+(\x)^2)},{cos(\az)*\x/(1+(\x)^2)},{((((\x)^2-1)/((\x)^2+1))+1)/2})}}}];
+%%% GREEN %%%
+\tdplotsetrotatedcoords{180+\az}{{atan(1/\x)}}{0+\az}
+\path[tdplot_rotated_coords,spath/save=name] (0,0) circle [radius={sqrt(((2*\x)/(1+(\x)^2))^2+((-2)/(1+(\x)^2))^2)/2}];
+\path[draw,green,spath/use={name,transform={shift={({-cos(\az)*\x/(1+(\x)^2)},{-sin(\az)*\x/(1+(\x)^2)},{((((\x)^2-1)/((\x)^2+1))+1)/2})}}}];
+%%% YELLOW %%%
+\tdplotsetrotatedcoords{270+\az}{{atan(1/\x)}}{0+\az}
+\path[tdplot_rotated_coords,spath/save=name] (0,0) circle [radius={sqrt(((2*\x)/(1+(\x)^2))^2+((-2)/(1+(\x)^2))^2)/2}];
+\path[draw,yellow,spath/use={name,transform={shift={({sin(\az)*\x/(1+(\x)^2)},{-cos(\az)*\x/(1+(\x)^2)},{((((\x)^2-1)/((\x)^2+1))+1)/2})}}}];
+}
+
+
+\path[draw,white,tdplot_screen_coords] (-5.5,-4.5) rectangle (5.5,4.5); 
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\tdplotsetmaincoords{45}{120}
+\begin{tikzpicture}[tdplot_main_coords,scale=0.5]
+\def \Vn {270}
+\def \Vo {9.5}
+\def \Voo {60}
+\draw[domain=90:\Vn,smooth,very thin,samples=1000,variable=\Vt] plot (
+{(\Vt/360)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt))*sin(\Voo*\Vt)},
+{(\Vt/360)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt))*cos(\Voo*\Vt)},
+{sin(\Vo*\Vt)/(1-sqrt(1-(\Vt/360)^2)*cos(\Vo*\Vt)))});
+
+\draw[white,tdplot_screen_coords] (-5,-5) rectangle (5,5);
+\end{tikzpicture}
+\end{center}
+
+
+\begin{center}
+\tdplotsetmaincoords{70}{120}
+\begin{tikzpicture}[tdplot_main_coords]
+\tdplotsetrotatedcoords{0}{0}{0}
+\draw[tdplot_rotated_coords,domain=60:360,smooth,very thin,samples=500,variable=\Vt,blue] 
+plot (
+{\Vt/360/(1-sqrt(1-(\Vt/360)^2)*cos(20*\Vt))*cos(20*\Vt)*sin(\Vt)},
+{sqrt(1-(\Vt/360)^2)*sin(20*\Vt)/(1-sqrt(1-(\Vt/360)^2)*cos(20*\Vt)))*cos(\Vt)},
+{sin(20*\Vt)});
+\draw[white,tdplot_screen_coords] (-5,-5) rectangle (5,5);
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\def\figureone{2}
+\tdplotsetmaincoords{65}{10}
+%\tdplotsetmaincoords{85}{10}
+\begin{tikzpicture}[tdplot_main_coords, scale=\figureone]
+\path[tdplot_screen_coords,spath/save=P] (0,0,0) circle [radius=0.03];
+\draw[-latex] (-1,0) -- (3.7,0) node[pos=1,below left]{$\eta,\ b$};
+\path[-latex] (-1,0) -- (3.7,0) node[pos=1,above]{$y$};
+\draw[-latex] (0,0) -- (0,-3.5) node[pos=1,left]{$\xi,\ a$};
+\path[-latex] (0,0) -- (0,-3.5) node[pos=1,below right]{$x$};
+\draw[] (-2,-4,0) -- (-2,3,0) -- (4,3,0) -- (4,-4,0) -- cycle;
+\node at (3.6,2.2,0) {$\overline{\mathbb{C}}$};
+\draw[-latex] (0,0,-2) -- (0,0,2) node[pos=1,right]{$\zeta,\ c$};
+\draw[tdplot_screen_coords] (0,0) circle [radius=1]; % outer circle
+\tdplotsetrotatedcoords{0}{0}{0}
+\draw[tdplot_rotated_coords] (0,0) circle [radius=1]; % base intersection
+\node[left] at (0,0,1) {$\scriptscriptstyle N$};
+\draw[] (0,0,1) -- (3,-2.5,0);
+\draw[dashed] (0,-2.5,0) -- (3,-2.5,0) -- (3,0,0);
+\node[left] at (0,-2.5,0) {$\scriptscriptstyle x$};
+\path[fill,spath/use={P, transform={shift={(\figureone*0,-\figureone*2.5,\figureone*0)}}}];
+\node[above] at (3,0,0) {$\scriptscriptstyle y$};
+\path[fill,spath/use={P, transform={shift={(\figureone*3,-\figureone*0,\figureone*0)}}}];
+\path[fill,spath/use={P, transform={shift={(\figureone*0.369,-\figureone*0.307,\figureone*0.876)}}}];
+\path[fill,spath/use={P, transform={shift={(\figureone*0,\figureone*0,\figureone*0.876)}}}];
+\path[fill,spath/use={P, transform={shift={(\figureone*0.369,-\figureone*0.307,\figureone*0)}}}];
+\node[above right] at (0.369,-0.307,0.876) {$\scriptscriptstyle P$};
+\node[left] at (0,0,0.876) {$\scriptscriptstyle M$};
+\node[below left] at (0.369,-0.307,0) {$\scriptscriptstyle Q$};
+\node[above left] at (0,0,-1) {$\scriptscriptstyle S$};
+\node[below right] at (3,-2.5,0) {$\scriptscriptstyle z$};
+\path[fill,spath/use={P, transform={shift={(\figureone*3,-\figureone*2.5,\figureone*0)}}}];
+\path[fill,spath/use={P, transform={shift={(\figureone*0,-\figureone*0,\figureone*1)}}}];
+\path[fill,spath/use={P, transform={shift={(\figureone*0,\figureone*0,-\figureone*1)}}}];
+\draw[dashed] (0,0,0.876) -- (0.369,-0.307,0.876) -- (0.369,-0.307,0);
+\draw[] (0,0,0) -- (3,-2.5,0);
+\node[above left] at (0,0) {$\scriptscriptstyle O$};
+\end{tikzpicture}
+\end{center}
+
+\end{document}

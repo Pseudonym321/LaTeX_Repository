@@ -1,0 +1,767 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{pline}
+  [2024/11/28 v0.01 LaTeX package for drawing planes and their intesections]
+
+\RequirePackage{
+    tikz
+    ,tikz-3dplot
+}
+
+\usetikzlibrary{
+    spath3
+    ,intersections
+    ,decorations.markings
+}
+
+% https://tex.stackexchange.com/a/509766/319072
+\newcommand{\neworrenewcommand}[1]{\providecommand{#1}{}\renewcommand{#1}}
+
+\pgfqkeys{/pline}{
+    .is family
+    ,xmin/.store in = \pline@xmin
+    ,xmax/.store in = \pline@xmax
+    ,ymin/.store in = \pline@ymin
+    ,ymax/.store in = \pline@ymax
+    ,zmin/.store in = \pline@zmin
+    ,zmax/.store in = \pline@zmax
+    ,xmin=-5
+    ,xmax=5
+    ,ymin=-5
+    ,ymax=5
+    ,zmin=-5
+    ,zmax=5
+}
+
+
+
+\newcommand{\xP}{}
+\newcommand{\yP}{}
+\newcommand{\zP}{}
+
+\newcommand{\getPlane}[6][]{
+\pgfqkeys{/pline}{#1}%
+\pgfmathsetmacro\aP{#2}
+\pgfmathsetmacro\bP{#3}
+\pgfmathsetmacro\cP{#4}
+\pgfmathsetmacro\dP{#5}
+\renewcommand{\xP}[2]{
+% #1  - y
+% #2  - z
+(((\dP)-((\bP)*(##1))-((\cP)*(##2)))/(\aP))
+}
+\renewcommand{\yP}[2]{
+% #1  - x
+% #2  - z
+(((\dP)-((\aP)*(##1))-((\cP)*(##2)))/(\bP))
+}
+\renewcommand{\zP}[2]{
+% #1  - x
+% #2  - y
+(((\dP)-((\aP)*(##1))-((\bP)*(##2)))/(\cP))
+}
+
+% fill cube
+\pgfmathparse{\aP == 0 && \bP == 0 && \cP == 0}
+\ifnum\pgfmathresult=1
+    \pgfmathparse{\dP == 0}
+    \ifnum\pgfmathresult=1
+        \draw[red, fill=green] (\pline@xmin,\pline@ymin,\pline@zmin) -- (\pline@xmax,\pline@ymin,\pline@zmin) -- (\pline@xmax,\pline@ymax,\pline@zmin) -- (\pline@xmin,\pline@ymax,\pline@zmin) -- cycle;
+        \draw[red, fill=green] (\pline@xmin,\pline@ymin,\pline@zmin) -- (\pline@xmax,\pline@ymin,\pline@zmin) -- (\pline@xmax,\pline@ymin,\pline@zmax) -- (\pline@xmin,\pline@ymin,\pline@zmax) -- cycle;
+        \draw[red, fill=green] (\pline@xmin,\pline@ymin,\pline@zmin) -- (\pline@xmin,\pline@ymax,\pline@zmin) -- (\pline@xmin,\pline@ymax,\pline@zmax) -- (\pline@xmin,\pline@ymin,\pline@zmax) -- cycle;
+        \draw[red, fill=green] (\pline@xmin,\pline@ymin,\pline@zmax) -- (\pline@xmax,\pline@ymin,\pline@zmax) -- (\pline@xmax,\pline@ymax,\pline@zmax) -- (\pline@xmin,\pline@ymax,\pline@zmax) -- cycle;
+        \draw[red, fill=green] (\pline@xmin,\pline@ymax,\pline@zmin) -- (\pline@xmax,\pline@ymax,\pline@zmin) -- (\pline@xmax,\pline@ymax,\pline@zmax) -- (\pline@xmin,\pline@ymax,\pline@zmax) -- cycle;
+        \draw[red, fill=green] (\pline@xmax,\pline@ymin,\pline@zmin) -- (\pline@xmax,\pline@ymax,\pline@zmin) -- (\pline@xmax,\pline@ymax,\pline@zmax) -- (\pline@xmax,\pline@ymin,\pline@zmax) -- cycle;
+    \else
+        % do nothing here
+    \fi
+\fi
+
+% yz planes
+\pgfmathparse{\aP != 0 && \bP == 0 && \cP == 0}
+\ifnum\pgfmathresult=1
+    \pgfmathparse{(\pline@xmin <= (\dP/\aP)) && ((\dP/\aP) <= \pline@xmax)}
+    \ifnum\pgfmathresult=1
+        \path[spath/save=#6] ({\xP{\pline@ymin}{\pline@zmin}},\pline@ymin,\pline@zmin) 
+        -- ({\xP{\pline@ymax}{\pline@zmin}},\pline@ymax,\pline@zmin) 
+        -- ({\xP{\pline@ymax}{\pline@zmax}},\pline@ymax,\pline@zmax) 
+        -- ({\xP{\pline@ymin}{\pline@zmax}},\pline@ymin,\pline@zmax) -- cycle;
+    \fi
+\fi
+
+% xz planes
+\pgfmathparse{\aP == 0 && \bP != 0 && \cP == 0}
+\ifnum\pgfmathresult=1
+    \pgfmathparse{(\pline@ymin <= (\dP/\bP)) && ((\dP/\bP) <= \pline@ymax)}
+    \ifnum\pgfmathresult=1
+        \path[spath/save=#6] (\pline@xmin,{\yP{\pline@xmin}{\pline@zmin}},\pline@zmin) 
+        -- (\pline@xmax,{\yP{\pline@xmax}{\pline@zmin}},\pline@zmin) 
+        -- (\pline@xmax,{\yP{\pline@xmax}{\pline@zmax}},\pline@zmax) 
+        -- (\pline@xmin,{\yP{\pline@xmin}{\pline@zmax}},\pline@zmax) -- cycle;
+    \fi
+\fi
+
+% xy planes
+\pgfmathparse{\aP == 0 && \bP == 0 && \cP != 0}
+\ifnum\pgfmathresult=1
+    \pgfmathparse{(\pline@zmin <= (\dP/\cP)) && ((\dP/\cP) <= \pline@zmax)}
+    \ifnum\pgfmathresult=1
+        \path[spath/save=#6] (\pline@xmin,\pline@ymin,{\zP{\pline@xmin}{\pline@ymin}}) 
+        -- (\pline@xmax,\pline@ymin,{\zP{\pline@xmax}{\pline@ymin}}) 
+        -- (\pline@xmax,\pline@ymax,{\zP{\pline@xmax}{\pline@ymax}}) 
+        -- (\pline@xmin,\pline@ymax,{\zP{\pline@xmin}{\pline@ymax}}) -- cycle;
+    \fi
+\fi
+
+% y of x planed (invariant over z)
+\pgfmathparse{\aP != 0 && \bP != 0 && \cP == 0}
+\ifnum\pgfmathresult=1
+    \pgfmathsetmacro\xylower{\pline@xmin}
+    \pgfmathparse{\pline@ymax < \yP{\pline@xmin}{0}}
+    \ifnum\pgfmathresult=1
+        \pgfmathsetmacro\xylower{\xP{\pline@ymax}{0}}
+    \fi
+    \pgfmathparse{\yP{\pline@xmin}{0} < \pline@ymin}
+    \ifnum\pgfmathresult=1
+        \pgfmathsetmacro\xylower{\xP{\pline@ymin}{0}}
+    \fi
+    
+    \pgfmathsetmacro\xyupper{\pline@xmax}
+    \pgfmathparse{\pline@ymax < \yP{\pline@xmax}{0}}
+    \ifnum\pgfmathresult=1
+        \pgfmathsetmacro\xyupper{\xP{\pline@ymin}{0}}
+    \fi
+    \pgfmathparse{\yP{\pline@xmax}{0} < \pline@ymin}
+    \ifnum\pgfmathresult=1
+        \pgfmathsetmacro\xyupper{\xP{\pline@ymax}{0}}
+    \fi
+
+    \pgfmathparse{!(\xylower < \pline@xmin || \xylower > \pline@xmax) && !(\xyupper < \pline@xmin || \xyupper > \pline@xmax)}
+    \ifnum\pgfmathresult=1
+        \path[spath/save=#6] 
+        (\xylower,{\yP{\xylower}{0}},\pline@zmin) -- 
+        (\xyupper,{\yP{\xyupper}{0}},\pline@zmin) -- 
+        (\xyupper,{\yP{\xyupper}{0}},\pline@zmax) -- 
+        (\xylower,{\yP{\xylower}{0}},\pline@zmax) -- cycle;
+    \fi
+\fi
+
+% z of x planed (invariant over y)
+\pgfmathparse{\aP != 0 && \bP == 0 && \cP != 0}
+\ifnum\pgfmathresult=1
+    \pgfmathsetmacro\xzlower{\pline@xmin}
+    \pgfmathparse{\pline@zmax < \zP{\pline@xmin}{0} || \zP{\pline@xmin}{0} < \pline@zmin}
+    \ifnum\pgfmathresult=1
+        \pgfmathsetmacro\xzlower{\xP{0}{\pline@zmax}}
+    \fi
+
+    \pgfmathsetmacro\xzupper{\pline@xmax}
+    \pgfmathparse{\pline@zmax < \zP{\pline@xmax}{0} || \zP{\pline@xmax}{0} < \pline@zmin}
+    \ifnum\pgfmathresult=1
+        \pgfmathsetmacro\xzupper{\xP{0}{\pline@zmin}}
+    \fi
+
+    \pgfmathparse{!(\xzlower < \pline@xmin || \xzlower > \pline@xmax) && !(\xzupper < \pline@xmin || \xzupper > \pline@xmax)}
+    \ifnum\pgfmathresult=1
+        \path[spath/save=#6] 
+        (\xzlower,\pline@ymin,{\zP{\xzlower}{0}}) -- 
+        (\xzupper,\pline@ymin,{\zP{\xzupper}{0}}) -- 
+        (\xzupper,\pline@ymax,{\zP{\xzupper}{0}}) -- 
+        (\xzlower,\pline@ymax,{\zP{\xzlower}{0}}) -- cycle;
+    \fi
+\fi
+
+% z of y planed (invariant over x)
+\pgfmathparse{\aP == 0 && \bP != 0 && \cP != 0}
+\ifnum\pgfmathresult=1
+    \pgfmathsetmacro\yzlower{\pline@ymin}
+    \pgfmathparse{\pline@zmax < \zP{0}{\pline@ymin} || \zP{0}{\pline@ymin} < \pline@zmin}
+    \ifnum\pgfmathresult=1
+        \pgfmathsetmacro\yzlower{\yP{0}{\pline@zmax}}
+    \fi
+
+    \pgfmathsetmacro\xzupper{\pline@ymax}
+    \pgfmathparse{\pline@zmax < \zP{0}{\pline@ymax} || \zP{0}{\pline@ymax} < \pline@zmin}
+    \ifnum\pgfmathresult=1
+        \pgfmathsetmacro\yzupper{\yP{0}{\pline@zmin}}
+    \fi
+
+    \pgfmathparse{!(\yzlower < \pline@ymin || \yzlower > \pline@ymax) && !(\yzupper < \pline@ymin || \yzupper > \pline@ymax)}
+    \ifnum\pgfmathresult=1
+        \path[spath/save=#6] 
+        (\pline@xmin,\yzlower,{\zP{0}{\yzlower}}) -- 
+        (\pline@xmin\yzupper,{\zP{0}{\yzupper}}) -- 
+        (\pline@xmax,\yzupper,{\zP{0}{\yzupper}}) -- 
+        (\pline@xmax,\yzlower,{\zP{0}{\yzlower}}) -- cycle;
+    \fi
+\fi
+
+% the final case
+\pgfmathparse{\aP != 0 && \bP != 0 && \cP != 0}
+\ifnum\pgfmathresult=1
+
+    \coordinate (xminymin1) at (\pline@xmin,\pline@ymin,{\zP{\pline@xmin}{\pline@ymin}});
+    \coordinate (xminymin2) at (\pline@xmin,\pline@ymin,{\zP{\pline@xmin}{\pline@ymin}});
+    \pgfmathparse{\pline@zmax < \zP{\pline@xmin}{\pline@ymin}}
+    \ifnum\pgfmathresult=1
+        \coordinate (xminymin1) at ({\xP{\pline@ymin}{\pline@zmax}},\pline@ymin,{\zP{\xP{\pline@ymin}{\pline@zmax}}{\pline@ymin}});
+        \coordinate (xminymin2) at ({\xP{\pline@ymax}{\pline@zmax}},\pline@ymax,{\zP{\xP{\pline@ymax}{\pline@zmax}}{\pline@ymax}});
+        \pgfmathparse{\xP{\pline@ymin}{\pline@zmax} > \pline@xmax || \xP{\pline@ymin}{\pline@zmax} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xminymin1) at (\pline@xmin,{\yP{\pline@xmin}{\pline@zmax}},{\zP{\pline@xmin}{\yP{\pline@xmin}{\pline@zmax}}});
+        \fi
+        \pgfmathparse{\xP{\pline@ymax}{\pline@zmax} > \pline@xmax || \xP{\pline@ymax}{\pline@zmax} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xminymin2) at (\pline@xmin,{\yP{\pline@xmin}{\pline@zmax}},{\zP{\pline@xmin}{\yP{\pline@xmin}{\pline@zmax}}});
+        \fi
+    \fi
+    \pgfmathparse{\pline@zmin > \zP{\pline@xmin}{\pline@ymin}}
+    \ifnum\pgfmathresult=1
+        \coordinate (xminymin1) at ({\xP{\pline@ymin}{\pline@zmin}},\pline@ymin,{\zP{\xP{\pline@ymin}{\pline@zmin}}{\pline@ymin}});
+        \coordinate (xminymin2) at ({\xP{\pline@ymax}{\pline@zmin}},\pline@ymax,{\zP{\xP{\pline@ymax}{\pline@zmin}}{\pline@ymax}});
+        \pgfmathparse{\xP{\pline@ymin}{\pline@zmin} > \pline@xmax || \xP{\pline@ymin}{\pline@zmin} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xminymin1) at (\pline@xmin,{\yP{\pline@xmin}{\pline@zmin}},{\zP{\pline@xmin}{\yP{\pline@xmin}{\pline@zmin}}});
+        \fi
+        \pgfmathparse{\xP{\pline@ymax}{\pline@zmin} > \pline@xmax || \xP{\pline@ymax}{\pline@zmin} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xminymin2) at (\pline@xmin,{\yP{\pline@xmin}{\pline@zmin}},{\zP{\pline@xmin}{\yP{\pline@xmin}{\pline@zmin}}});
+        \fi
+    \fi
+
+    \coordinate (xmaxymin1) at (\pline@xmax,\pline@ymin,{\zP{\pline@xmax}{\pline@ymin}});
+    \coordinate (xmaxymin2) at (\pline@xmax,\pline@ymin,{\zP{\pline@xmax}{\pline@ymin}});
+    \pgfmathparse{\pline@zmax < \zP{\pline@xmax}{\pline@ymin}}
+    \ifnum\pgfmathresult=1
+        \coordinate (xmaxymin1) at ({\xP{\pline@ymin}{\pline@zmax}},\pline@ymin,{\zP{\xP{\pline@ymin}{\pline@zmax}}{\pline@ymin}});
+        \coordinate (xmaxymin2) at ({\xP{\pline@ymax}{\pline@zmax}},\pline@ymax,{\zP{\xP{\pline@ymax}{\pline@zmax}}{\pline@ymax}});
+        \pgfmathparse{\xP{\pline@ymin}{\pline@zmax} > \pline@xmax || \xP{\pline@ymin}{\pline@zmax} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xmaxymin1) at (\pline@xmax,{\yP{\pline@xmax}{\pline@zmax}},{\zP{\pline@xmax}{\yP{\pline@xmax}{\pline@zmax}}});
+        \fi
+        \pgfmathparse{\xP{\pline@ymax}{\pline@zmax} > \pline@xmax || \xP{\pline@ymax}{\pline@zmax} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xmaxymin2) at (\pline@xmax,{\yP{\pline@xmax}{\pline@zmax}},{\zP{\pline@xmax}{\yP{\pline@xmax}{\pline@zmax}}});
+        \fi
+    \fi
+    \pgfmathparse{\pline@zmin > \zP{\pline@xmax}{\pline@ymin}}
+    \ifnum\pgfmathresult=1
+        \coordinate (xmaxymin1) at ({\xP{\pline@ymin}{\pline@zmin}},\pline@ymin,{\zP{\xP{\pline@ymin}{\pline@zmin}}{\pline@ymin}});
+        \coordinate (xmaxymin2) at ({\xP{\pline@ymax}{\pline@zmin}},\pline@ymax,{\zP{\xP{\pline@ymax}{\pline@zmin}}{\pline@ymax}});
+        \pgfmathparse{\xP{\pline@ymin}{\pline@zmin} > \pline@xmax || \xP{\pline@ymin}{\pline@zmin} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xmaxymin1) at (\pline@xmax,{\yP{\pline@xmax}{\pline@zmin}},{\zP{\pline@xmax}{\yP{\pline@xmax}{\pline@zmin}}});
+        \fi
+        \pgfmathparse{\xP{\pline@ymax}{\pline@zmin} > \pline@xmax || \xP{\pline@ymax}{\pline@zmin} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xmaxymin2) at (\pline@xmax,{\yP{\pline@xmax}{\pline@zmin}},{\zP{\pline@xmax}{\yP{\pline@xmax}{\pline@zmin}}});
+        \fi
+    \fi
+
+    \coordinate (xmaxymax1) at (\pline@xmax,\pline@ymax,{\zP{\pline@xmax}{\pline@ymax}});
+    \coordinate (xmaxymax2) at (\pline@xmax,\pline@ymax,{\zP{\pline@xmax}{\pline@ymax}});
+    \pgfmathparse{\pline@zmax < \zP{\pline@xmax}{\pline@ymax}}
+    \ifnum\pgfmathresult=1
+        \coordinate (xmaxymax1) at ({\xP{\pline@ymin}{\pline@zmax}},\pline@ymin,{\zP{\xP{\pline@ymin}{\pline@zmax}}{\pline@ymin}});
+        \coordinate (xmaxymax2) at ({\xP{\pline@ymax}{\pline@zmax}},\pline@ymax,{\zP{\xP{\pline@ymax}{\pline@zmax}}{\pline@ymax}});
+        \pgfmathparse{\xP{\pline@ymin}{\pline@zmax} > \pline@xmax || \xP{\pline@ymin}{\pline@zmax} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xmaxymax1) at (\pline@xmax,{\yP{\pline@xmax}{\pline@zmax}},{\zP{\pline@xmax}{\yP{\pline@xmax}{\pline@zmax}}});
+        \fi
+        \pgfmathparse{\xP{\pline@ymax}{\pline@zmax} > \pline@xmax || \xP{\pline@ymax}{\pline@zmax} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xmaxymax2) at (\pline@xmax,{\yP{\pline@xmax}{\pline@zmax}},{\zP{\pline@xmax}{\yP{\pline@xmax}{\pline@zmax}}});
+        \fi
+    \fi
+    \pgfmathparse{\pline@zmin > \zP{\pline@xmax}{\pline@ymax}}
+    \ifnum\pgfmathresult=1
+        \coordinate (xmaxymax1) at ({\xP{\pline@ymin}{\pline@zmin}},\pline@ymin,{\zP{\xP{\pline@ymin}{\pline@zmin}}{\pline@ymin}});
+        \coordinate (xmaxymax2) at ({\xP{\pline@ymax}{\pline@zmin}},\pline@ymax,{\zP{\xP{\pline@ymax}{\pline@zmin}}{\pline@ymax}});
+        \pgfmathparse{\xP{\pline@ymin}{\pline@zmin} > \pline@xmax || \xP{\pline@ymin}{\pline@zmin} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xmaxymax1) at (\pline@xmax,{\yP{\pline@xmax}{\pline@zmin}},{\zP{\pline@xmax}{\yP{\pline@xmax}{\pline@zmin}}});
+        \fi
+        \pgfmathparse{\xP{\pline@ymax}{\pline@zmin} > \pline@xmax || \xP{\pline@ymax}{\pline@zmin} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xmaxymax2) at (\pline@xmax,{\yP{\pline@xmax}{\pline@zmin}},{\zP{\pline@xmax}{\yP{\pline@xmax}{\pline@zmin}}});
+        \fi
+    \fi
+
+    \coordinate (xminymax1) at (\pline@xmin,\pline@ymax,{\zP{\pline@xmin}{\pline@ymax}});
+    \coordinate (xminymax2) at (\pline@xmin,\pline@ymax,{\zP{\pline@xmin}{\pline@ymax}});
+    \pgfmathparse{\pline@zmax < \zP{\pline@xmin}{\pline@ymax}}
+    \ifnum\pgfmathresult=1
+        \coordinate (xminymax1) at ({\xP{\pline@ymin}{\pline@zmax}},\pline@ymin,{\zP{\xP{\pline@ymin}{\pline@zmax}}{\pline@ymin}});
+        \coordinate (xminymax2) at ({\xP{\pline@ymax}{\pline@zmax}},\pline@ymax,{\zP{\xP{\pline@ymax}{\pline@zmax}}{\pline@ymax}});
+        \pgfmathparse{\xP{\pline@ymin}{\pline@zmax} > \pline@xmax || \xP{\pline@ymin}{\pline@zmax} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xminymax1) at (\pline@xmin,{\yP{\pline@xmin}{\pline@zmax}},{\zP{\pline@xmin}{\yP{\pline@xmin}{\pline@zmax}}});
+        \fi
+        \pgfmathparse{\xP{\pline@ymax}{\pline@zmax} > \pline@xmax || \xP{\pline@ymax}{\pline@zmax} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xminymax2) at (\pline@xmin,{\yP{\pline@xmin}{\pline@zmax}},{\zP{\pline@xmin}{\yP{\pline@xmin}{\pline@zmax}}});
+        \fi
+    \fi
+    \pgfmathparse{\pline@zmin > \zP{\pline@xmin}{\pline@ymax}}
+    \ifnum\pgfmathresult=1
+        \coordinate (xminymax1) at 
+        (
+            {\xP{\pline@ymin}{\pline@zmin}}
+            ,\pline@ymin
+            ,{\zP{\xP{\pline@ymin}{\pline@zmin}}{\pline@ymin}}
+        );
+        \coordinate (xminymax2) at 
+        (
+            {\xP{\pline@ymax}{\pline@zmin}}
+            ,\pline@ymax
+            ,{\zP{\xP{\pline@ymax}{\pline@zmin}}{\pline@ymax}}
+        );
+        \pgfmathparse{\xP{\pline@ymin}{\pline@zmin} > \pline@xmax || \xP{\pline@ymin}{\pline@zmin} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xminymax1) at 
+            (
+                \pline@xmin
+                ,{\yP{\pline@xmin}{\pline@zmin}}
+                ,{\zP{\pline@xmin}{\yP{\pline@xmin}{\pline@zmin}}}
+            );
+        \fi
+        \pgfmathparse{\xP{\pline@ymax}{\pline@zmin} > \pline@xmax || \xP{\pline@ymax}{\pline@zmin} < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \coordinate (xminymax2) at (\pline@xmin,{\yP{\pline@xmin}{\pline@zmin}},{\zP{\pline@xmin}{\yP{\pline@xmin}{\pline@zmin}}});
+        \fi
+    \fi
+
+    \pgfmathparse{\yP{\pline@xmin}{\pline@zmin} > \pline@ymax}
+    \ifnum\pgfmathresult=1
+        \path[spath/save=#6] 
+        (xminymin2) -- (xminymin1) -- 
+        (xmaxymin1) -- (xmaxymin2) -- 
+        (xmaxymax1) -- (xmaxymax2) -- 
+        (xminymax2) -- (xminymax1) -- 
+        cycle;
+    \else
+        \pgfmathparse{\yP{\pline@xmax}{\pline@zmin} < \pline@ymin}
+        \ifnum\pgfmathresult=1
+            \path[spath/save=#6] 
+            (xminymin2) -- (xminymin1) -- 
+            (xmaxymin1) -- (xmaxymin2) -- 
+            (xmaxymax1) -- (xmaxymax2) -- 
+            (xminymax1) -- (xminymax2) -- 
+            cycle;
+        
+        \else
+            \path[spath/save=#6] 
+            (xminymin2) -- (xminymin1) -- 
+            (xmaxymin1) -- (xmaxymin2) -- 
+            (xmaxymax1) -- (xmaxymax2) -- 
+            (xminymax2) -- (xminymax1) -- 
+            cycle;
+        \fi
+    \fi
+
+
+\fi
+
+}
+
+
+
+
+
+
+
+
+
+\newcommand{\Lyofx}[1]{}
+\newcommand{\Lxofy}[1]{}
+
+\newcommand{\Lzofx}[1]{}
+\newcommand{\Lxofz}[1]{}
+
+\newcommand{\Lzofy}[1]{}
+\newcommand{\Lyofz}[1]{}
+
+\newcommand{\getLine}[9][]{
+\neworrenewcommand{\getLineinner}[1]{
+\pgfqkeys{/pline}{#1}%
+
+\pgfmathsetmacro\aPone{#2}
+\pgfmathsetmacro\bPone{#3}
+\pgfmathsetmacro\cPone{#4}
+\pgfmathsetmacro\dPone{#5}
+
+\pgfmathsetmacro\aPtwo{#6}
+\pgfmathsetmacro\bPtwo{#7}
+\pgfmathsetmacro\cPtwo{#8}
+\pgfmathsetmacro\dPtwo{#9}
+
+\renewcommand{\Lyofx}[1]{((\dPtwo-(\cPtwo)*(\dPone)/(\cPone))-(\aPtwo-(\cPtwo)*(\aPone)/(\cPone))*(####1))/(\bPtwo-(\cPtwo)*(\bPone)/(\cPone))}
+\renewcommand{\Lzofx}[1]{((\dPtwo-(\bPtwo)*(\dPone)/(\bPone))-(\aPtwo-(\bPtwo)*(\aPone)/(\bPone))*(####1))/(\cPtwo-(\bPtwo)*(\cPone)/(\bPone))}
+
+\renewcommand{\Lzofy}[1]{((\dPtwo-(\aPtwo)*(\dPone)/(\aPone))-(\bPtwo-(\aPtwo)*(\bPone)/(\aPone))*(####1))/(\cPtwo-(\aPtwo)*(\cPone)/(\aPone))}
+\renewcommand{\Lxofy}[1]{((\dPtwo-(\cPtwo)*(\dPone)/(\cPone))-(\bPtwo-(\cPtwo)*(\bPone)/(\cPone))*(####1))/(\aPtwo-(\cPtwo)*(\aPone)/(\cPone))}
+
+\renewcommand{\Lyofz}[1]{((\dPtwo-(\aPtwo)*(\dPone)/(\aPone))-(\cPtwo-(\aPtwo)*(\cPone)/(\aPone))*(####1))/(\bPtwo-(\aPtwo)*(\bPone)/(\aPone))}
+\renewcommand{\Lxofz}[1]{((\dPtwo-(\bPtwo)*(\dPone)/(\bPone))-(\cPtwo-(\bPtwo)*(\cPone)/(\bPone))*(####1))/(\aPtwo-(\bPtwo)*(\aPone)/(\bPone))}
+
+
+% nonparallel test
+%\eqFrac{\aPone}{\aPtwo}{\bPone}{\bPtwo}
+%\pgfmathsetmacro{\testone}{\pgfmathresult}
+
+%\eqFrac{\aPone}{\aPtwo}{\cPone}{\cPtwo}
+%\pgfmathsetmacro{\testtwo}{\pgfmathresult}
+
+%\pgfmathparse{!(\testone && \testtwo)}
+%\ifnum\pgfmathresult=1
+\ifnum1=1
+
+    \pgfmathparse{!(\bPtwo == \cPtwo*(\bPone)/(\cPone) || \cPtwo == \bPtwo*(\cPone)/(\bPone))}
+    \ifnum\pgfmathresult=1
+        \pgfmathsetmacro\Lstartx{\pline@xmin}
+        \pgfmathsetmacro\Lstarty{\Lyofx{\pline@xmin}}
+        \pgfmathsetmacro\Lstartz{\Lzofx{\pline@xmin}}
+        \pgfmathsetmacro\Lendx{\pline@xmax}
+        \pgfmathsetmacro\Lendy{\Lyofx{\pline@xmax}}
+        \pgfmathsetmacro\Lendz{\Lzofx{\pline@xmax}}
+
+        \pgfmathparse{\Lendy > \pline@ymax}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lendx{\Lxofy{\pline@ymax}}
+            \pgfmathsetmacro\Lendy{\Lyofx{\Lxofy{\pline@ymax}}}
+            \pgfmathsetmacro\Lendz{\Lzofx{\Lxofy{\pline@ymax}}}
+        \fi
+        \pgfmathparse{\Lendy < \pline@ymin}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lendx{\Lxofy{\pline@ymin}}
+            \pgfmathsetmacro\Lendy{\Lyofx{\Lxofy{\pline@ymin}}}
+            \pgfmathsetmacro\Lendz{\Lzofx{\Lxofy{\pline@ymin}}}
+        \fi
+
+        \pgfmathparse{\Lstarty > \pline@ymax}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lstartx{\Lxofy{\pline@ymax}}
+            \pgfmathsetmacro\Lstarty{\Lyofx{\Lxofy{\pline@ymax}}}
+            \pgfmathsetmacro\Lstartz{\Lzofx{\Lxofy{\pline@ymax}}}
+        \fi
+        \pgfmathparse{\Lstarty < \pline@ymin}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lstartx{\Lxofy{\pline@ymin}}
+            \pgfmathsetmacro\Lstarty{\Lyofx{\Lxofy{\pline@ymin}}}
+            \pgfmathsetmacro\Lstartz{\Lzofx{\Lxofy{\pline@ymin}}}
+        \fi
+
+        %%%
+
+        \pgfmathparse{\Lendz > \pline@zmax}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lendx{\Lxofz{\pline@zmax}}
+            \pgfmathsetmacro\Lendy{\Lyofx{\Lxofz{\pline@zmax}}}
+            \pgfmathsetmacro\Lendz{\Lzofx{\Lxofz{\pline@zmax}}}
+        \fi
+        \pgfmathparse{\Lendz < \pline@zmin}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lendx{\Lxofz{\pline@zmin}}
+            \pgfmathsetmacro\Lendy{\Lyofx{\Lxofz{\pline@zmin}}}
+            \pgfmathsetmacro\Lendz{\Lzofx{\Lxofz{\pline@zmin}}}
+        \fi
+
+        \pgfmathparse{\Lstartz > \pline@zmax}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lstartx{\Lxofz{\pline@zmax}}
+            \pgfmathsetmacro\Lstarty{\Lyofx{\Lxofz{\pline@zmax}}}
+            \pgfmathsetmacro\Lstartz{\Lzofx{\Lxofz{\pline@zmax}}}
+        \fi
+        \pgfmathparse{\Lstartz < \pline@zmin}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lstartx{\Lxofz{\pline@zmin}}
+            \pgfmathsetmacro\Lstarty{\Lyofx{\Lxofz{\pline@zmin}}}
+            \pgfmathsetmacro\Lstartz{\Lzofx{\Lxofz{\pline@zmin}}}
+        \fi
+               
+        \coordinate (Lstart) at (\Lstartx,\Lstarty,\Lstartz);
+        \coordinate (Lend) at (\Lendx,\Lendy,\Lendz);
+        
+    \else
+
+        \pgfmathparse{!(\cPtwo == \aPtwo*(\cPone)/(\aPone) || \aPtwo == \cPtwo*(\aPone)/(\cPone))}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lstartx{\Lxofy{\pline@ymin}}
+            \pgfmathsetmacro\Lstarty{\pline@ymin}
+            \pgfmathsetmacro\Lstartz{\Lzofy{\pline@ymin}}
+            \pgfmathsetmacro\Lendx{\Lxofy{\pline@ymax}}
+            \pgfmathsetmacro\Lendy{\pline@ymax}
+            \pgfmathsetmacro\Lendz{\Lzofy{\pline@ymax}}
+    
+            \pgfmathparse{\Lendx > \pline@xmax}
+            \ifnum\pgfmathresult=1
+                \pgfmathsetmacro\Lendx{\Lxofy{\Lyofx{\pline@xmax}}}
+                \pgfmathsetmacro\Lendy{\Lyofx{\pline@xmax}}
+                \pgfmathsetmacro\Lendz{\Lzofy{\Lyofx{\pline@xmax}}}
+            \fi
+            \pgfmathparse{\Lendx < \pline@xmin}
+            \ifnum\pgfmathresult=1
+                \pgfmathsetmacro\Lendx{\Lxofy{\Lyofx{\pline@xmin}}}
+                \pgfmathsetmacro\Lendy{\Lyofx{\pline@xmin}}
+                \pgfmathsetmacro\Lendz{\Lzofy{\Lyofx{\pline@xmin}}}
+            \fi
+    
+            \pgfmathparse{\Lstartx > \pline@xmax}
+            \ifnum\pgfmathresult=1
+                \pgfmathsetmacro\Lstartx{\Lxofy{\Lyofx{\pline@xmax}}}
+                \pgfmathsetmacro\Lstarty{\Lyofx{\pline@xmax}}
+                \pgfmathsetmacro\Lstartz{\Lzofy{\Lyofx{\pline@xmax}}}
+            \fi
+            \pgfmathparse{\Lstartx < \pline@xmin}
+            \ifnum\pgfmathresult=1
+                \pgfmathsetmacro\Lstartx{\Lxofy{\Lyofx{\pline@xmin}}}
+                \pgfmathsetmacro\Lstarty{\Lyofx{\pline@xmin}}
+                \pgfmathsetmacro\Lstartz{\Lzofy{\Lyofx{\pline@xmin}}}
+            \fi
+    
+            %%%
+    
+            \pgfmathparse{\Lendz > \pline@zmax}
+            \ifnum\pgfmathresult=1
+                \pgfmathsetmacro\Lendx{\Lxofy{\Lyofz{\pline@zmax}}}
+                \pgfmathsetmacro\Lendy{\Lyofz{\pline@zmax}}
+                \pgfmathsetmacro\Lendz{\Lzofy{\Lyofz{\pline@zmax}}}
+            \fi
+            \pgfmathparse{\Lendz < \pline@zmin}
+            \ifnum\pgfmathresult=1
+                \pgfmathsetmacro\Lendx{\Lxofy{\Lyofz{\pline@zmin}}}
+                \pgfmathsetmacro\Lendy{\Lyofz{\pline@zmin}}
+                \pgfmathsetmacro\Lendz{\Lzofy{\Lyofz{\pline@zmin}}}
+            \fi
+    
+            \pgfmathparse{\Lstartz > \pline@zmax}
+            \ifnum\pgfmathresult=1
+                \pgfmathsetmacro\Lstartx{\Lxofy{\Lyofz{\pline@zmax}}}
+                \pgfmathsetmacro\Lstarty{\Lyofz{\pline@zmax}}
+                \pgfmathsetmacro\Lstartz{\Lzofy{\Lyofz{\pline@zmax}}}
+            \fi
+            \pgfmathparse{\Lstartz < \pline@zmin}
+            \ifnum\pgfmathresult=1
+                \pgfmathsetmacro\Lstartx{\Lxofy{\Lyofz{\pline@zmin}}}
+                \pgfmathsetmacro\Lstarty{\Lyofz{\pline@zmin}}
+                \pgfmathsetmacro\Lstartz{\Lzofy{\Lyofz{\pline@zmin}}}
+            \fi
+                   
+            \coordinate (Lstart) at (\Lstartx,\Lstarty,\Lstartz);
+            \coordinate (Lend) at (\Lendx,\Lendy,\Lendz);
+        \fi
+
+    \else
+
+    \pgfmathparse{!(\bPtwo == \aPtwo*(\bPone)/(\aPone) || \aPtwo == \bPtwo*(\aPone)/(\bPone))}
+    \ifnum\pgfmathresult=1
+        \pgfmathsetmacro\Lstartx{\Lxofz{\pline@zmin}}
+        \pgfmathsetmacro\Lstarty{\Lyofz{\pline@zmin}}
+        \pgfmathsetmacro\Lstartz{\pline@zmin}
+        \pgfmathsetmacro\Lendx{\Lxofz{\pline@zmax}}
+        \pgfmathsetmacro\Lendy{\Lyofz{\pline@zmax}}
+        \pgfmathsetmacro\Lendz{\pline@zmax}
+
+        \pgfmathparse{\Lendx > \pline@xmax}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lendx{\Lxofz{\Lzofx{\pline@xmax}}}
+            \pgfmathsetmacro\Lendy{\Lyofz{\Lzofx{\pline@xmax}}}
+            \pgfmathsetmacro\Lendz{\Lzofx{\pline@xmax}}
+        \fi
+        \pgfmathparse{\Lendx < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lendx{\Lxofz{\Lzofx{\pline@xmin}}}
+            \pgfmathsetmacro\Lendy{\Lyofz{\Lzofx{\pline@xmin}}}
+            \pgfmathsetmacro\Lendz{\Lzofx{\pline@xmin}}
+        \fi
+
+        \pgfmathparse{\Lendy > \pline@ymax}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lendx{\Lxofz{\Lzofy{\pline@ymax}}}
+            \pgfmathsetmacro\Lendy{\Lyofz{\Lzofy{\pline@ymax}}}
+            \pgfmathsetmacro\Lendz{\Lzofy{\pline@ymax}}
+        \fi
+        \pgfmathparse{\Lendy < \pline@ymin}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lendx{\Lxofz{\Lzofy{\pline@ymin}}}
+            \pgfmathsetmacro\Lendy{\Lyofz{\Lzofy{\pline@ymin}}}
+            \pgfmathsetmacro\Lendz{\Lzofy{\pline@ymin}}
+        \fi
+
+        %%%
+
+        \pgfmathparse{\Lstartx > \pline@xmax}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lstartx{\Lxofz{\Lzofx{\pline@xmax}}}
+            \pgfmathsetmacro\Lstarty{\Lyofz{\Lzofx{\pline@xmax}}}
+            \pgfmathsetmacro\Lstartz{\Lzofx{\pline@xmax}}
+        \fi
+        \pgfmathparse{\Lstartx < \pline@xmin}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lstartx{\Lxofz{\Lzofx{\pline@xmin}}}
+            \pgfmathsetmacro\Lstarty{\Lyofz{\Lzofx{\pline@xmin}}}
+            \pgfmathsetmacro\Lendz{\Lzofx{\pline@xmin}}
+        \fi
+
+        \pgfmathparse{\Lstarty > \pline@ymax}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lstartx{\Lxofz{\Lzofy{\pline@ymax}}}
+            \pgfmathsetmacro\Lstarty{\Lyofz{\Lzofy{\pline@ymax}}}
+            \pgfmathsetmacro\Lstartz{\Lzofy{\pline@ymax}}
+        \fi
+        \pgfmathparse{\Lstarty < \pline@ymin}
+        \ifnum\pgfmathresult=1
+            \pgfmathsetmacro\Lstartx{\Lxofz{\Lzofy{\pline@ymin}}}
+            \pgfmathsetmacro\Lstarty{\Lyofz{\Lzofy{\pline@ymin}}}
+            \pgfmathsetmacro\Lstartz{\Lzofy{\pline@ymin}}
+        \fi
+               
+        \coordinate (Lstart) at (\Lstartx,\Lstarty,\Lstartz);
+        \coordinate (Lend) at (\Lendx,\Lendy,\Lendz);
+
+    \fi\fi
+
+           \path[spath/save=##1] (Lstart) -- (Lend);
+
+\else
+    % if they are parallel, do nothing
+    \path[spath/save=##1];
+\fi
+    }% ends inner newcommand
+    \getLineinner
+}
+
+
+\newcommand{\drawbox}[1][]{
+\pgfqkeys{/pline}{#1}%
+
+\coordinate (plineX) at (\pline@xmax-\pline@xmin,0,0);
+\coordinate (plineY) at (0,\pline@ymax-\pline@ymin,0);
+\coordinate (plineZ) at (0,0,\pline@zmax-\pline@zmin);
+
+% base
+\coordinate (plineStart) at (\pline@xmin,\pline@ymin,\pline@zmin);
+\coordinate (plineEnd) at (\pline@xmax,\pline@ymin,\pline@zmin);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineY)$);
+\draw[->,ultra thin] (\pline@xmax,\pline@ymin,\pline@zmin) -- ++($0.2*(plineX)$);
+
+\coordinate (plineStart) at (\pline@xmax,\pline@ymin,\pline@zmin);
+\coordinate (plineEnd) at (\pline@xmax,\pline@ymax,\pline@zmin);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineX)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineX)$);
+
+\coordinate (plineStart) at (\pline@xmax,\pline@ymax,\pline@zmin);
+\coordinate (plineEnd) at (\pline@xmin,\pline@ymax,\pline@zmin);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineY)$);
+
+\coordinate (plineStart) at (\pline@xmin,\pline@ymax,\pline@zmin);
+\coordinate (plineEnd) at (\pline@xmin,\pline@ymin,\pline@zmin);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineX)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineX)$);
+\draw[->,ultra thin] (\pline@xmin,\pline@ymax,\pline@zmin) -- ++($0.2*(plineY)$);
+
+% spokes
+\coordinate (plineStart) at (\pline@xmin,\pline@ymin,\pline@zmin);
+\coordinate (plineEnd) at (\pline@xmin,\pline@ymin,\pline@zmax);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineX)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineX)$);
+\draw[->,ultra thin] (\pline@xmin,\pline@ymin,\pline@zmax) -- ++($0.2*(plineZ)$);
+
+\coordinate (plineStart) at (\pline@xmax,\pline@ymin,\pline@zmin);
+\coordinate (plineEnd) at (\pline@xmax,\pline@ymin,\pline@zmax);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineX)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineX)$);
+
+\coordinate (plineStart) at (\pline@xmax,\pline@ymax,\pline@zmin);
+\coordinate (plineEnd) at (\pline@xmax,\pline@ymax,\pline@zmax);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineX)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineX)$);
+
+\coordinate (plineStart) at (\pline@xmin,\pline@ymax,\pline@zmin);
+\coordinate (plineEnd) at (\pline@xmin,\pline@ymax,\pline@zmax);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineX)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineX)$);
+
+% top
+\coordinate (plineStart) at (\pline@xmin,\pline@ymin,\pline@zmax);
+\coordinate (plineEnd) at (\pline@xmax,\pline@ymin,\pline@zmax);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineZ)$);
+
+\coordinate (plineStart) at (\pline@xmax,\pline@ymin,\pline@zmax);
+\coordinate (plineEnd) at (\pline@xmax,\pline@ymax,\pline@zmax);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineX)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineX)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineZ)$);
+
+\coordinate (plineStart) at (\pline@xmax,\pline@ymax,\pline@zmax);
+\coordinate (plineEnd) at (\pline@xmin,\pline@ymax,\pline@zmax);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineY)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineZ)$);
+
+
+\coordinate (plineStart) at (\pline@xmin,\pline@ymax,\pline@zmax);
+\coordinate (plineEnd) at (\pline@xmin,\pline@ymin,\pline@zmax);
+\draw[very thin] (plineStart) -- (plineEnd);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($0.05*(plineX)$);
+\draw[ultra thin] ($(plineStart) + 0.25*(plineEnd) - 0.25*(plineStart)$) -- ++($-0.05*(plineZ)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($0.05*(plineX)$);
+\draw[ultra thin] ($(plineStart) + 0.75*(plineEnd) - 0.75*(plineStart)$) -- ++($-0.05*(plineZ)$);
+
+
+}
+
+
+% https://tex.stackexchange.com/a/731044/319072
+\tikzset{tdplot_scaled_coords/.style n args={3}{x={(#1*\raarot cm,#1*\rbarot cm)},y={(#2*\rabrot cm, #2*\rbbrot cm)},z={(#3*\racrot cm, #3*\rbcrot cm)}}}%
+
+\newcommand{\LabelPath}[6]{
+% Labels a path
+% #1  - Start Coordinate
+% #2  - End Coordinate
+% #3  - Position along path
+% #4  - Relative X-POS
+% #5  - Relative Y-POS
+% #6  - The label
+\path[
+decoration={markings,
+mark=at position #3 with {\node at (#4,#5) {#6};},
+},
+postaction={decorate}]
+(#1) -- ++(#2);
+}
+
+\endinput
